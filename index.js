@@ -3,7 +3,7 @@ const height = 600;
 
 const svg = d3.select('body').append('svg').attr('width', width).attr('height', height);
 
-const projection = d3.geoMercator().scale(140).translate([width/2, height/2]);
+const projection = d3.geoMercator().scale(140).translate([width/2, height*2/3]);
 const path = d3.geoPath(projection);
 
 const g = svg.append('g');
@@ -17,7 +17,7 @@ Promise.all([
     const formatCountryName = (name) => {
         if (!name) return '';
         
-        // Eerst speciale gevallen aanpakken
+        // usa moet United Stated of America worden
         const specialCases = {
           'usa': 'United States of America',
         };
@@ -64,9 +64,10 @@ Promise.all([
             // Maak een tooltip
             svg.append('text')
                 .attr('class', 'country-label')
-                .attr('x', event.clientX - 50)
-                .attr('y', event.clientY - 10)
-                .text(`${countryName}: ${attackCount} aanvallen`);
+                .attr('x', '50%')
+                .attr('text-anchor', 'middle')
+                .attr('y', '90%')
+                .text(`${countryName}: ${attackCount} Attacks`);
         })
         .on('mouseout', function() {
             // Verwijder de tooltip
