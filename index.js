@@ -8,9 +8,70 @@ const path = d3.geoPath(projection);
 
 const g = svg.append('g');
 
-d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(data => {
-    const countries = topojson.feature(data, data.objects.countries);
-    
-    g.selectAll('path').data(countries.features).enter().append('path').attr('class', 'country').attr('d', path);
 
+Promise.all([
+    d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'),
+    d3.csv('global_shark_attacks.csv')
+]).then(([mapData, sharkData]) => {
+
+    const formatCountryName = (name) => {
+        if (!name) return '';
+        
+        // Eerst speciale gevallen aanpakken
+        const specialCases = {
+          'usa': 'United States of America',
+        };
+        
+        const lowerName = name.toLowerCase();
+        if (specialCases[lowerName]) {
+          return specialCases[lowerName];
+        }
+        
+        // Title Case toepassen op andere landnamen
+        return lowerName
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+      };
+      
+    const attackCountries = sharkData.map(d => formatCountryName(d.country));
+
+
+    const attacksByCountry = {};
+    attackCountries.forEach(country => {
+        if (country) {
+            attacksByCountry[country] = (attacksByCountry[country] || 0) + 1;
+        }
+    });
+
+    const countries = topojson.feature(mapData, mapData.objects.countries);
+    g.selectAll('path')
+        .data(countries.features)
+        .enter()
+        .append('path')
+        .attr('class', 'country')
+        .attr('d', path)
+        .attr('fill', d => {
+            // Zoek of dit land in de aanvaldata voorkomt
+            const countryName = d.properties.name;
+            return attacksByCountry[countryName] ? '#ff0000' : '#ccc';
+        })
+        .on('mouseover', function(event, d) {
+            // Toon aantal aanvallen bij hover
+            const countryName = d.properties.name;
+            const attackCount = attacksByCountry[countryName] || 0;
+            
+            // Maak een tooltip
+            svg.append('text')
+                .attr('class', 'country-label')
+                .attr('x', event.clientX - 50)
+                .attr('y', event.clientY - 10)
+                .text(`${countryName}: ${attackCount} aanvallen`);
+        })
+        .on('mouseout', function() {
+            // Verwijder de tooltip
+            d3.selectAll('.country-label').remove();
+        });
+        
+    //console.log('Landnamen in haaienaanval data:', attackCountries);
 });
