@@ -5,3 +5,10 @@
     font-size: 19px;
     font-weight: bold; 
 }
+#barchart-container {
+    position: absolute; 
+    top: 70%;
+    left: 10%;
+    width: 300px;
+    height: 300px;
+}
