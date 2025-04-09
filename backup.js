@@ -1,77 +1,84 @@
-const width = 900;
-const height = 600;
-
-const svg = d3.select('body').append('svg').attr('width', width).attr('height', height);
-
-const projection = d3.geoMercator().scale(140).translate([width/2, height*2/3]);
-const path = d3.geoPath(projection);
-
-const g = svg.append('g');
-
-
-Promise.all([
-    d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'),
-    d3.csv('global_shark_attacks.csv')
-]).then(([mapData, sharkData]) => {
-
-    const formatCountryName = (name) => {
-        if (!name) return '';
+    // Function to create bar chart
+    function createBarChart(data, countryName, name) {
         
-        // usa moet United Stated of America worden
-        const specialCases = {
-          'usa': 'United States of America',
-        };
-        
-        const lowerName = name.toLowerCase();
-        if (specialCases[lowerName]) {
-          return specialCases[lowerName];
+        // Only proceed if we have data
+        if (!data || data.length === 0) {
+            d3.select(name)
+                .append("p")
+                .text("No attack type data available");
+            return;
         }
-        
-        // Title Case toepassen op andere landnamen
-        return lowerName
-          .split(' ')
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
-      };
-      
-    const attackCountries = sharkData.map(d => formatCountryName(d.country));
 
+        // Bereken totaal aantal aanvallen voor percentages
+        const totalAttacks = d3.sum(data, d => d.count);
+        const percentageData = data.map(d => ({
+            type: d.type,
+            percentage: (d.count / totalAttacks) * 100 // Omzetten naar %
+        }));
 
-    const attacksByCountry = {};
-    attackCountries.forEach(country => {
-        if (country) {
-            attacksByCountry[country] = (attacksByCountry[country] || 0) + 1;
+        var title = '';
+        var category = '';
+        if (name === "#barchart-container-type") {
+            title = "Attack Types";
+            category = "type";
+        } else if (name === "#barchart-container-fatal_y_n") {
+            title = "Fatality";
+            category = "fatal_y_n"
         }
-    });
 
-    const countries = topojson.feature(mapData, mapData.objects.countries);
-    g.selectAll('path')
-        .data(countries.features)
-        .enter()
-        .append('path')
-        .attr('class', 'country')
-        .attr('d', path)
-        .attr('fill', d => {
-            // Zoek of dit land in de aanvaldata voorkomt
-            const countryName = d.properties.name;
-            return attacksByCountry[countryName] ? '#ff0000' : '#ccc';
-        })
-        .on('mouseover', function(event, d) {
-            // Toon aantal aanvallen bij hover
-            const countryName = d.properties.name;
-            const attackCount = attacksByCountry[countryName] || 0;
-            
-            // Maak een tooltip
-            svg.append('text')
-                .attr('class', 'country-label')
-                .attr('x', '50%')
-                .attr('text-anchor', 'middle')
-                .attr('y', '90%')
-                .text(`${countryName}: ${attackCount} Attacks`);
-        })
-        .on('mouseout', function() {
-            // Verwijder de tooltip
-            d3.selectAll('.country-label').remove();
-        });
+        // Margins and dimensions (you can adjust these)
+        const margin = { top: 40, right: 60, bottom: 70, left: 100 };
+        const width = 300 - margin.left - margin.right;
+        const height = 200 - margin.top - margin.bottom;
+    
+        // Create SVG
+        const svg = d3.select(name)
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+    
+        // X-axis (attack types)
+        const x = d3.scaleBand()
+            .range([0, width])
+            .domain(percentageData.map(d => d.type))
+            .padding(0.2);
+
+        svg.append("g")
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom(x))
+            .selectAll("text")
+            .attr("transform", "rotate(-45)")
+            .style("text-anchor", "end");
+
+        // Y-axis (percentages)
+        const y = d3.scaleLinear()
+            .range([height, 0])
+            .domain([0, 100]); // 0-100%
+
+        svg.append("g")
+            .call(d3.axisLeft(y)
+                .tickValues([0, 20, 40, 60, 80, 100])
+                .tickFormat(d => `${d}%`) // Toon percentages
+            );
         
-});
+        // Bars (vertical)
+        svg.selectAll("rect")
+            .data(percentageData)
+            .enter()
+            .append("rect")
+            .attr("x", d => x(d.type))
+            .attr("y", d => y(d.percentage)) // Begin bovenaan
+            .attr("width", x.bandwidth())
+            .attr("height", d => height - y(d.percentage)) // Hoogte = percentage
+            .attr("fill", "#69b3a2");
+
+        
+        // Title
+        svg.append("text")
+            .attr("x", width / 2)
+            .attr("y", -10)
+            .attr("text-anchor", "middle")
+            .text(title);
+    }

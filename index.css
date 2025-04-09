@@ -5,10 +5,17 @@
     font-size: 19px;
     font-weight: bold; 
 }
-#barchart-container {
+#barchart-container-type{
     position: absolute; 
     top: 70%;
     left: 10%;
+    width: 300px;
+    height: 300px;
+}
+#barchart-container-fatal_y_n{
+    position: absolute; 
+    top: 70%;
+    left: 40%;
     width: 300px;
     height: 300px;
 }

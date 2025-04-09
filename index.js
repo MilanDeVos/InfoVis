@@ -1,3 +1,5 @@
+import * as charts from './charts.js';
+
 const width = 900;
 const height = 600;
 
@@ -22,7 +24,8 @@ const infoDiv = d3.select('body').append('div')
 Promise.all([
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'),
     //d3.csv('global_shark_attacks.csv')
-    d3.csv('NewSharkCSV.csv')
+    //d3.csv('NewSharkCSV.csv')
+    d3.csv('Updated_Countries.csv')
 ]).then(([mapData, sharkData]) => {
 
     const formatCountryName = (name) => {
@@ -30,7 +33,7 @@ Promise.all([
         
         // usa moet United Stated of America worden
         const specialCases = {
-          'usa': 'United States of America',
+          'united states of america': 'United States of America',
         };
         
         const lowerName = name.toLowerCase();
@@ -117,10 +120,25 @@ Promise.all([
                 type,
                 count
             })).sort((a, b) => b.count - a.count);
-    
+
+            const attackfatality = {};
+            countryData.forEach(d => {
+                const fatal_y_n = d.fatal_y_n || 'Unknown';
+                attackfatality[fatal_y_n] = (attackfatality[fatal_y_n] || 0) + 1;
+            });
+
+            // Convert to array for D3
+            const fatalityData = Object.entries(attackfatality).map(([fatal_y_n, count]) => ({
+                fatal_y_n,
+                count
+            })).sort((a, b) => b.count - a.count);
+            console.log(fatalityData);
             // Create bar chart
-            createBarChart(typeData, countryName);
-            
+            //createBarChart(typeData, countryName, "#barchart-container-type");
+            //createBarChart(typeData, countryName, "#barchart-container-fatal_y_n");
+            charts.createTypeBarChart(typeData, countryName);
+            charts.createFatalityBarChart(fatalityData, countryName);
+
             infoDiv.html(`
                 <h2>${countryName}</h2>
                 <p>Total shark attacks: ${attackCount}</p>
@@ -197,8 +215,24 @@ Promise.all([
                     count
                 })).sort((a, b) => b.count - a.count);
 
+                const attackfatality = {};
+                countryData.forEach(d => {
+                    const fatal_y_n = d.fatal_y_n || 'Unknown';
+                    attackfatality[fatal_y_n] = (attackfatality[fatal_y_n] || 0) + 1;
+                });
+
+                // Convert to array for D3
+                const fatalityData = Object.entries(attackfatality).map(([fatal_y_n, count]) => ({
+                    fatal_y_n,
+                    count
+                })).sort((a, b) => b.count - a.count);
+    
+
                 // Create bar chart
-                createBarChart(typeData, countryName);
+                //createBarChart(typeData, countryName, "#barchart-container-type");
+                //createBarChart(typeData, countryName, "#barchart-container-fatal_y_n");
+                charts.createTypeBarChart(typeData, countryName);
+                charts.createFatalityBarChart(fatalityData, countryName);
                 
                 infoDiv.html(`
                     <h2>${countryName}</h2>
@@ -212,82 +246,11 @@ Promise.all([
             });
             
         // Verwijder de bar chart en maak info panel leeg
-        d3.select("#barchart-container svg").remove();
-        d3.select("#barchart-container p").remove();
+        d3.select("#barchart-container-type svg").remove();
+        d3.select("#barchart-container-type p").remove();
+        d3.select("#barchart-container-fatal_y_n svg").remove();
+        d3.select("#barchart-container-fatal_y_n p").remove();
         infoDiv.html('');
     }
 
-    // Function to create bar chart
-    function createBarChart(data, countryName) {
-        
-        // Only proceed if we have data
-        if (!data || data.length === 0) {
-            d3.select("#barchart-container")
-                .append("p")
-                .text("No attack type data available");
-            return;
-        }
-
-        // Bereken totaal aantal aanvallen voor percentages
-        const totalAttacks = d3.sum(data, d => d.count);
-        const percentageData = data.map(d => ({
-            type: d.type,
-            percentage: (d.count / totalAttacks) * 100 // Omzetten naar %
-        }));
-
-        // Margins and dimensions (you can adjust these)
-        const margin = { top: 40, right: 60, bottom: 70, left: 100 };
-        const width = 300 - margin.left - margin.right;
-        const height = 200 - margin.top - margin.bottom;
-    
-        // Create SVG
-        const svg = d3.select("#barchart-container")
-            .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`);
-    
-        // X-axis (attack types)
-        const x = d3.scaleBand()
-            .range([0, width])
-            .domain(percentageData.map(d => d.type))
-            .padding(0.2);
-
-        svg.append("g")
-            .attr("transform", `translate(0,${height})`)
-            .call(d3.axisBottom(x))
-            .selectAll("text")
-            .attr("transform", "rotate(-45)")
-            .style("text-anchor", "end");
-
-        // Y-axis (percentages)
-        const y = d3.scaleLinear()
-            .range([height, 0])
-            .domain([0, 100]); // 0-100%
-
-        svg.append("g")
-            .call(d3.axisLeft(y)
-                .tickValues([0, 20, 40, 60, 80, 100])
-                .tickFormat(d => `${d}%`) // Toon percentages
-            );
-        
-        // Bars (vertical)
-    svg.selectAll("rect")
-        .data(percentageData)
-        .enter()
-        .append("rect")
-        .attr("x", d => x(d.type))
-        .attr("y", d => y(d.percentage)) // Begin bovenaan
-        .attr("width", x.bandwidth())
-        .attr("height", d => height - y(d.percentage)) // Hoogte = percentage
-        .attr("fill", "#69b3a2");
-
-    // Title
-    svg.append("text")
-        .attr("x", width / 2)
-        .attr("y", -10)
-        .attr("text-anchor", "middle")
-        .text(`Attack Types in ${countryName} (%)`);
-    }
 });
