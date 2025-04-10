@@ -109,6 +109,7 @@ Promise.all([
                 d.country.toLowerCase() === countryName.toLowerCase() // moet mss nog aangepast worden
             );
 
+            // ATTACK TYPES
             const attackTypes = {};
             countryData.forEach(d => {
                 const type = d.type || 'Unknown';
@@ -121,6 +122,7 @@ Promise.all([
                 count
             })).sort((a, b) => b.count - a.count);
 
+            // ATTACK FATALITY
             const attackfatality = {};
             countryData.forEach(d => {
                 const fatal_y_n = d.fatal_y_n || 'Unknown';
@@ -132,12 +134,26 @@ Promise.all([
                 fatal_y_n,
                 count
             })).sort((a, b) => b.count - a.count);
-            console.log(fatalityData);
+
+            // VICTIMS ACTIVITY
+            const victimsActivity = {};
+            countryData.forEach(d => {
+                const general_activity = d.general_activity || 'Unknown';
+                victimsActivity[general_activity] = (victimsActivity[general_activity] || 0) + 1;
+            });
+
+            // Convert to array for D3
+            const activityData = Object.entries(victimsActivity).map(([general_activity, count]) => ({
+                general_activity,
+                count
+            })).sort((a, b) => b.count - a.count);
+
             // Create bar chart
             //createBarChart(typeData, countryName, "#barchart-container-type");
             //createBarChart(typeData, countryName, "#barchart-container-fatal_y_n");
             charts.createTypeBarChart(typeData, countryName);
             charts.createFatalityBarChart(fatalityData, countryName);
+            charts.createActivityBarChart(activityData, countryName);
 
             infoDiv.html(`
                 <h2>${countryName}</h2>
@@ -203,6 +219,7 @@ Promise.all([
                     d.country.toLowerCase() === countryName.toLowerCase() // moet mss nog aangepast worden
                 );
 
+                // ATTACK TYPES
                 const attackTypes = {};
                 countryData.forEach(d => {
                     const type = d.type || 'Unknown';
@@ -215,6 +232,7 @@ Promise.all([
                     count
                 })).sort((a, b) => b.count - a.count);
 
+                // ATTACK FATALITY
                 const attackfatality = {};
                 countryData.forEach(d => {
                     const fatal_y_n = d.fatal_y_n || 'Unknown';
@@ -226,13 +244,26 @@ Promise.all([
                     fatal_y_n,
                     count
                 })).sort((a, b) => b.count - a.count);
-    
 
+                // VICTIMS ACTIVITY
+                const victimsActivity = {};
+                countryData.forEach(d => {
+                    const general_activity = d.general_activity || 'Unknown';
+                    victimsActivity[general_activity] = (victimsActivity[general_activity] || 0) + 1;
+                });
+
+                // Convert to array for D3
+                const activityData = Object.entries(victimsActivity).map(([general_activity, count]) => ({
+                    general_activity,
+                    count
+                })).sort((a, b) => b.count - a.count);
+    
                 // Create bar chart
                 //createBarChart(typeData, countryName, "#barchart-container-type");
                 //createBarChart(typeData, countryName, "#barchart-container-fatal_y_n");
                 charts.createTypeBarChart(typeData, countryName);
                 charts.createFatalityBarChart(fatalityData, countryName);
+                charts.createActivityBarChart(activityData, countryName);
                 
                 infoDiv.html(`
                     <h2>${countryName}</h2>
@@ -250,6 +281,8 @@ Promise.all([
         d3.select("#barchart-container-type p").remove();
         d3.select("#barchart-container-fatal_y_n svg").remove();
         d3.select("#barchart-container-fatal_y_n p").remove();
+        d3.select("#barchart-container-activity svg").remove();
+        d3.select("#barchart-container-activity p").remove();
         infoDiv.html('');
     }
 

@@ -145,3 +145,78 @@ export function createFatalityBarChart(data, countryName) {
         .attr("text-anchor", "middle")
         .text("Fatality Rate of Attacks");
 }
+
+export function createActivityBarChart(data, countryName) {
+        
+    console.log("aaaaaaa");
+    // Only proceed if we have data
+    if (!data || data.length === 0) {
+        d3.select('#barchart-container-activity')
+            .append("p")
+            .text("No activity data available");
+        return;
+    }
+
+    // Bereken totaal aantal aanvallen voor percentages
+    const totalAttacks = d3.sum(data, d => d.count);
+    const percentageData = data.map(d => ({
+        activity: d.general_activity,
+        percentage: (d.count / totalAttacks) * 100 // Omzetten naar %
+    }));
+
+    // Margins and dimensions (you can adjust these)
+    const margin = { top: 40, right: 60, bottom: 70, left: 100 };
+    const width = 300 - margin.left - margin.right;
+    const height = 200 - margin.top - margin.bottom;
+
+    // Create SVG
+    const svg = d3.select('#barchart-container-activity')
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // X-axis
+    const x = d3.scaleBand()
+        .range([0, width])
+        .domain(percentageData.map(d => d.activity))
+        .padding(0.2);
+
+    svg.append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+        .attr("transform", "rotate(-45)")
+        .style("text-anchor", "end");
+
+    // Y-axis (percentages)
+    const y = d3.scaleLinear()
+        .range([height, 0])
+        .domain([0, 100]); // 0-100%
+
+    svg.append("g")
+        .call(d3.axisLeft(y)
+            .tickValues([0, 20, 40, 60, 80, 100])
+            .tickFormat(d => `${d}%`) // Toon percentages
+        );
+    
+    // Bars (vertical)
+    svg.selectAll("rect")
+        .data(percentageData)
+        .enter()
+        .append("rect")
+        .attr("x", d => x(d.activity))
+        .attr("y", d => y(d.percentage)) // Begin bovenaan
+        .attr("width", x.bandwidth())
+        .attr("height", d => height - y(d.percentage)) // Hoogte = percentage
+        .attr("fill", "#ccc"); 
+
+    
+    // Title
+    svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", -10)
+        .attr("text-anchor", "middle")
+        .text("Activity of victim");
+}
