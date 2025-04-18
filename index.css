@@ -8,21 +8,28 @@
 #barchart-container-type{
     position: absolute; 
     top: 70%;
-    left: 10%;
+    left: 0%;
     width: 300px;
     height: 300px;
 }
 #barchart-container-fatal_y_n{
     position: absolute; 
     top: 70%;
-    left: 40%;
+    left: 30%;
     width: 300px;
     height: 300px;
 }
 #barchart-container-activity{
     position: absolute; 
     top: 70%;
-    left: 70%;
+    left: 60%;
+    width: 300px;
+    height: 300px;
+}
+#barchart-container-area{
+    position: absolute; 
+    top: 20%;
+    left: 60%;
     width: 300px;
     height: 300px;
 }

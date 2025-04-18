@@ -89,6 +89,14 @@ Promise.all([
             d3.selectAll('.country-label').remove();
         })
         .on('click', function(event, clickedCountry) {
+            // Check if a country is already selected
+            if (d3.select('.country-selected').size() > 0) {
+                return; // Exit if a country is already selected
+            }
+            
+            // Mark this country as selected
+            d3.select(this).classed('country-selected', true);
+
             // Verwijder alle landen behalve het aangeklikte
             countryPaths.filter(d => d !== clickedCountry).remove();
             
@@ -96,7 +104,7 @@ Promise.all([
             const newProjection = d3.geoMercator()
                 .scale(140)
                 .translate([width/4, height*2/3]) // Verplaats naar links (1/4 in plaats van 1/2)
-                .fitSize([width/2, height/2], {type: "FeatureCollection", features: [clickedCountry]});
+                .fitSize([width*2/3, height*2/3], {type: "FeatureCollection", features: [clickedCountry]});
             
             // Update het pad van het overgebleven land
             d3.select(this)
@@ -149,12 +157,24 @@ Promise.all([
                 count
             })).sort((a, b) => b.count - a.count);
 
+            // AREA
+            const attackArea = {};
+            countryData.forEach(d => {
+                const area = d.area || 'Unknown';
+                attackArea[area] = (attackArea[area] || 0) + 1;
+            });
+
+            // Convert to array for D3
+            const areaData = Object.entries(attackArea).map(([area, count]) => ({
+                area,
+                count
+            })).sort((a, b) => b.count - a.count);
+
             // Create bar chart
-            //createBarChart(typeData, countryName, "#barchart-container-type");
-            //createBarChart(typeData, countryName, "#barchart-container-fatal_y_n");
             charts.createTypeBarChart(typeData, countryName);
             charts.createFatalityBarChart(fatalityData, countryName);
             charts.createActivityBarChart(activityData, countryName);
+            charts.createAreaBarChart(areaData, countryName);
 
             infoDiv.html(`
                 <h2>${countryName}</h2>
@@ -165,6 +185,8 @@ Promise.all([
             // Voeg event listener toe voor reset knop
             d3.select('#reset-btn').on('click', function() {
                 resetMap();
+                // Remove the selected class when resetting
+                d3.select('.country-selected').classed('country-selected', false);
             });
         });
         
@@ -199,6 +221,14 @@ Promise.all([
                 d3.selectAll('.country-label').remove();
             })
             .on('click', function(event, clickedCountry) {
+                // Check if a country is already selected
+                if (d3.select('.country-selected').size() > 0) {
+                    return; // Exit if a country is already selected
+                }
+                
+                // Mark this country as selected
+                d3.select(this).classed('country-selected', true);
+
                 // Verwijder alle landen behalve het aangeklikte
                 g.selectAll('.country').filter(d => d !== clickedCountry).remove();
                 
@@ -206,7 +236,7 @@ Promise.all([
                 const newProjection = d3.geoMercator()
                     .scale(140)
                     .translate([width/4, height*2/3])
-                    .fitSize([width/2, height/2], {type: "FeatureCollection", features: [clickedCountry]});
+                    .fitSize([width*2/3, height*2/3], {type: "FeatureCollection", features: [clickedCountry]});
                 
                 // Update het pad van het overgebleven land
                 d3.select(this)
@@ -258,14 +288,26 @@ Promise.all([
                     general_activity,
                     count
                 })).sort((a, b) => b.count - a.count);
-    
+
+                // AREA
+                const attackArea = {};
+                countryData.forEach(d => {
+                    const area = d.area || 'Unknown';
+                    attackArea[area] = (attackArea[area] || 0) + 1;
+                });
+
+                // Convert to array for D3
+                const areaData = Object.entries(attackArea).map(([area, count]) => ({
+                    area,
+                    count
+                })).sort((a, b) => b.count - a.count);
+
                 // Create bar chart
-                //createBarChart(typeData, countryName, "#barchart-container-type");
-                //createBarChart(typeData, countryName, "#barchart-container-fatal_y_n");
                 charts.createTypeBarChart(typeData, countryName);
                 charts.createFatalityBarChart(fatalityData, countryName);
                 charts.createActivityBarChart(activityData, countryName);
-                
+                charts.createAreaBarChart(areaData, countryName);
+                    
                 infoDiv.html(`
                     <h2>${countryName}</h2>
                     <p>Total shark attacks: ${attackCount}</p>
@@ -274,6 +316,8 @@ Promise.all([
                 
                 d3.select('#reset-btn').on('click', function() {
                     resetMap();
+                    // Remove the selected class when resetting
+                    d3.select('.country-selected').classed('country-selected', false);
                 });
             });
             
@@ -284,6 +328,8 @@ Promise.all([
         d3.select("#barchart-container-fatal_y_n p").remove();
         d3.select("#barchart-container-activity svg").remove();
         d3.select("#barchart-container-activity p").remove();
+        d3.select("#barchart-container-area svg").remove();
+        d3.select("#barchart-container-area p").remove();
         infoDiv.html('');
     }
 
