@@ -25,7 +25,8 @@ Promise.all([
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'),
     //d3.csv('global_shark_attacks.csv')
     //d3.csv('NewSharkCSV.csv')
-    d3.csv('Updated_Countries.csv')
+    //d3.csv('Updated_Countries.csv')
+    d3.csv('cleaned_shark_data.csv')
 ]).then(([mapData, sharkData]) => {
 
     const formatCountryName = (name) => {
