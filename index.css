@@ -1,6 +1,9 @@
 .country {
     stroke: #000000;
 }
+.state {
+    stroke: #000000;
+}
 .country-label {
     font-size: 19px;
     font-weight: bold; 
