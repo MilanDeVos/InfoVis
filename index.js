@@ -32,7 +32,7 @@ Promise.all([
     const formatCountryName = (name) => {
         if (!name) return '';
         
-        // usa moet United Stated of America worden
+        // united states of america moet United Stated of America worden
         const specialCases = {
           'united states of america': 'United States of America',
         };
@@ -58,6 +58,11 @@ Promise.all([
         }
     });
 
+    const maxAttacks = d3.max(Object.values(attacksByCountry)) || 1;
+    const colorScale = d3.scaleLinear()
+    .domain([0, maxAttacks])
+    .range(["#ffcccc", "#cc0000"]); // licht naar donkerrood
+
     const countries = topojson.feature(mapData, mapData.objects.countries);
     
     // Bewaar de oorspronkelijke data voor reset
@@ -72,7 +77,8 @@ Promise.all([
         .attr('d', path)
         .attr('fill', d => {
             const countryName = d.properties.name;
-            return attacksByCountry[countryName] ? '#ff0000' : '#ccc';
+            const attackCount = attacksByCountry[countryName] || 0;
+            return attackCount > 0 ? colorScale(attackCount) : '#ccc';
         })
         .on('mouseover', function(event, d) {
             const countryName = d.properties.name;
@@ -104,7 +110,7 @@ Promise.all([
             if (countryName === 'United States of America') {
                 // Load US states data
                 Promise.all([
-                    d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json'),
+                    d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json'), // Map van USA
                     d3.csv('cleaned_shark_data.csv')
                 ]).then(([usData, sharkData]) => {
                     // Remove all countries
@@ -133,6 +139,11 @@ Promise.all([
                             attacksByState[state] = (attacksByState[state] || 0) + 1;
                         }
                     });
+
+                    const maxStateAttacks = d3.max(Object.values(attacksByState)) || 1;
+                        const stateColorScale = d3.scaleLinear()
+                            .domain([0, maxStateAttacks])
+                            .range(["#ffcccc", "#cc0000"]);
                     
                     // Draw US states
                     g.selectAll('.state')
@@ -143,7 +154,8 @@ Promise.all([
                         .attr('d', usPath)
                         .attr('fill', d => {
                             const stateName = d.properties.name;
-                            return attacksByState[stateName] ? '#ff0000' : '#ccc';
+                            const attackCount = attacksByState[stateName] || 0;
+                            return attackCount > 0 ? stateColorScale(attackCount) : '#ccc';
                         })
                         .on('mouseover', function(event, d) {
                             const stateName = d.properties.name;
@@ -159,6 +171,54 @@ Promise.all([
                         .on('mouseout', function() {
                             d3.selectAll('.state-label').remove();
                         });
+                    
+                        const stateData = sharkData.filter(d => 
+                            d.country === "UNITED STATES OF AMERICA"
+                        );
+
+                    // ATTACK TYPES
+                    const attackTypes = {};
+                    stateData.forEach(d => {
+                        const type = d.type || 'Unknown';
+                        attackTypes[type] = (attackTypes[type] || 0) + 1;
+                    });
+
+                    // Convert to array for D3
+                    const typeData = Object.entries(attackTypes).map(([type, count]) => ({
+                        type,
+                        count
+                    })).sort((a, b) => b.count - a.count);
+
+                    // ATTACK FATALITY
+                    const attackfatality = {};
+                    stateData.forEach(d => {
+                        const fatal_y_n = d.fatal_y_n || 'Unknown';
+                        attackfatality[fatal_y_n] = (attackfatality[fatal_y_n] || 0) + 1;
+                    });
+
+                    // Convert to array for D3
+                    const fatalityData = Object.entries(attackfatality).map(([fatal_y_n, count]) => ({
+                        fatal_y_n,
+                        count
+                    })).sort((a, b) => b.count - a.count);
+
+                    // VICTIMS ACTIVITY
+                    const victimsActivity = {};
+                    stateData.forEach(d => {
+                        const general_activity = d.general_activity || 'Unknown';
+                        victimsActivity[general_activity] = (victimsActivity[general_activity] || 0) + 1;
+                    });
+
+                    // Convert to array for D3
+                    const activityData = Object.entries(victimsActivity).map(([general_activity, count]) => ({
+                        general_activity,
+                        count
+                    })).sort((a, b) => b.count - a.count);
+
+                    // Create bar chart
+                    charts.createTypeBarChart(typeData, "UNITED STATES OF AMERICA");
+                    charts.createFatalityBarChart(fatalityData, "UNITED STATES OF AMERICA");
+                    charts.createActivityBarChart(activityData, "UNITED STATES OF AMERICA");
                         
                     // Update info panel for USA view
                     infoDiv.html(`
@@ -173,7 +233,7 @@ Promise.all([
             } else if (countryName === 'Australia') {
                 // Load Australia states data from specific GeoJSON
                 Promise.all([
-                    d3.json('aust.json'), // Your Australia-specific GeoJSON
+                    d3.json('aust.json'), // Map van Australie
                     d3.csv('cleaned_shark_data.csv')
                 ]).then(([ausData, sharkData]) => {
                     // Remove all countries
@@ -190,14 +250,19 @@ Promise.all([
                         formatCountryName(d.country) === 'Australia'
                     );
                     
-                    // Count attacks by state - you may need to adjust property names
+                    // Count attacks by state
                     const attacksByState = {};
                     ausSharkData.forEach(d => {
-                        const state = d.area; // or d.state, depending on your data
+                        const state = d.area; 
                         if (state) {
                             attacksByState[state] = (attacksByState[state] || 0) + 1;
                         }
                     });
+
+                    const maxStateAttacks = d3.max(Object.values(attacksByState)) || 1;
+                    const stateColorScale = d3.scaleLinear()
+                        .domain([0, maxStateAttacks])
+                        .range(["#ffcccc", "#cc0000"]);
                     
                     // Draw Australian states
                     g.selectAll('.state')
@@ -207,9 +272,9 @@ Promise.all([
                         .attr('class', 'state')
                         .attr('d', ausPath)
                         .attr('fill', d => {
-                            // You may need to adjust the property name based on your aust.json
-                            const stateName = d.properties.name || d.properties.STATE_NAME; 
-                            return attacksByState[stateName] ? '#ff0000' : '#ccc';
+                            const stateName = d.properties.STATE_NAME;
+                            const attackCount = attacksByState[stateName] || 0;
+                            return attackCount > 0 ? stateColorScale(attackCount) : '#ccc';
                         })
                         .on('mouseover', function(event, d) {
                             const stateName = d.properties.name || d.properties.STATE_NAME;
@@ -231,6 +296,54 @@ Promise.all([
                             // Show state-specific shark attack data
                         });
                         
+                    const stateData = sharkData.filter(d => 
+                        d.country === "AUSTRALIA"
+                    );
+
+                    // ATTACK TYPES
+                    const attackTypes = {};
+                    stateData.forEach(d => {
+                        const type = d.type || 'Unknown';
+                        attackTypes[type] = (attackTypes[type] || 0) + 1;
+                    });
+
+                    // Convert to array for D3
+                    const typeData = Object.entries(attackTypes).map(([type, count]) => ({
+                        type,
+                        count
+                    })).sort((a, b) => b.count - a.count);
+
+                    // ATTACK FATALITY
+                    const attackfatality = {};
+                    stateData.forEach(d => {
+                        const fatal_y_n = d.fatal_y_n || 'Unknown';
+                        attackfatality[fatal_y_n] = (attackfatality[fatal_y_n] || 0) + 1;
+                    });
+
+                    // Convert to array for D3
+                    const fatalityData = Object.entries(attackfatality).map(([fatal_y_n, count]) => ({
+                        fatal_y_n,
+                        count
+                    })).sort((a, b) => b.count - a.count);
+
+                    // VICTIMS ACTIVITY
+                    const victimsActivity = {};
+                    stateData.forEach(d => {
+                        const general_activity = d.general_activity || 'Unknown';
+                        victimsActivity[general_activity] = (victimsActivity[general_activity] || 0) + 1;
+                    });
+
+                    // Convert to array for D3
+                    const activityData = Object.entries(victimsActivity).map(([general_activity, count]) => ({
+                        general_activity,
+                        count
+                    })).sort((a, b) => b.count - a.count);
+
+                    // Create bar chart
+                    charts.createTypeBarChart(typeData, "AUSTRALIA");
+                    charts.createFatalityBarChart(fatalityData, "AUSTRALIA");
+                    charts.createActivityBarChart(activityData, "AUSTRALIA");
+
                     // Update info panel
                     infoDiv.html(`
                         <h2>Australia</h2>
@@ -350,7 +463,8 @@ Promise.all([
             .attr('d', path)
             .attr('fill', d => {
                 const countryName = d.properties.name;
-                return attacksByCountry[countryName] ? '#ff0000' : '#ccc';
+                const attackCount = attacksByCountry[countryName] || 0;
+                return attackCount > 0 ? colorScale(attackCount) : '#ccc';
             })
             .on('mouseover', function(event, d) {
                 const countryName = d.properties.name;
@@ -404,11 +518,16 @@ Promise.all([
                         // Count attacks by state
                         const attacksByState = {};
                         usSharkData.forEach(d => {
-                            const state = d.area; // or whatever field contains state info
+                            const state = d.area;
                             if (state) {
                                 attacksByState[state] = (attacksByState[state] || 0) + 1;
                             }
                         });
+
+                        const maxStateAttacks = d3.max(Object.values(attacksByState)) || 1;
+                        const stateColorScale = d3.scaleLinear()
+                            .domain([0, maxStateAttacks])
+                            .range(["#ffcccc", "#cc0000"]);
                         
                         // Draw US states
                         g.selectAll('.state')
@@ -419,7 +538,8 @@ Promise.all([
                             .attr('d', usPath)
                             .attr('fill', d => {
                                 const stateName = d.properties.name;
-                                return attacksByState[stateName] ? '#ff0000' : '#ccc';
+                                const attackCount = attacksByState[stateName] || 0;
+                                return attackCount > 0 ? stateColorScale(attackCount) : '#ccc';
                             })
                             .on('mouseover', function(event, d) {
                                 const stateName = d.properties.name;
@@ -435,6 +555,54 @@ Promise.all([
                             .on('mouseout', function() {
                                 d3.selectAll('.state-label').remove();
                             });
+
+                        const stateData = sharkData.filter(d => 
+                            d.country === "UNITED STATES OF AMERICA"
+                        );
+
+                        // ATTACK TYPES
+                        const attackTypes = {};
+                        stateData.forEach(d => {
+                            const type = d.type || 'Unknown';
+                            attackTypes[type] = (attackTypes[type] || 0) + 1;
+                        });
+
+                        // Convert to array for D3
+                        const typeData = Object.entries(attackTypes).map(([type, count]) => ({
+                            type,
+                            count
+                        })).sort((a, b) => b.count - a.count);
+
+                        // ATTACK FATALITY
+                        const attackfatality = {};
+                        stateData.forEach(d => {
+                            const fatal_y_n = d.fatal_y_n || 'Unknown';
+                            attackfatality[fatal_y_n] = (attackfatality[fatal_y_n] || 0) + 1;
+                        });
+
+                        // Convert to array for D3
+                        const fatalityData = Object.entries(attackfatality).map(([fatal_y_n, count]) => ({
+                            fatal_y_n,
+                            count
+                        })).sort((a, b) => b.count - a.count);
+
+                        // VICTIMS ACTIVITY
+                        const victimsActivity = {};
+                        stateData.forEach(d => {
+                            const general_activity = d.general_activity || 'Unknown';
+                            victimsActivity[general_activity] = (victimsActivity[general_activity] || 0) + 1;
+                        });
+
+                        // Convert to array for D3
+                        const activityData = Object.entries(victimsActivity).map(([general_activity, count]) => ({
+                            general_activity,
+                            count
+                        })).sort((a, b) => b.count - a.count);
+
+                        // Create bar chart
+                        charts.createTypeBarChart(typeData, "UNITED STATES OF AMERICA");
+                        charts.createFatalityBarChart(fatalityData, "UNITED STATES OF AMERICA");
+                        charts.createActivityBarChart(activityData, "UNITED STATES OF AMERICA");
                             
                         // Update info panel for USA view
                         infoDiv.html(`
@@ -474,6 +642,11 @@ Promise.all([
                                 attacksByState[state] = (attacksByState[state] || 0) + 1;
                             }
                         });
+
+                        const maxStateAttacks = d3.max(Object.values(attacksByState)) || 1;
+                        const stateColorScale = d3.scaleLinear()
+                            .domain([0, maxStateAttacks])
+                            .range(["#ffcccc", "#cc0000"]);
                         
                         // Draw Australian states
                         g.selectAll('.state')
@@ -483,9 +656,9 @@ Promise.all([
                             .attr('class', 'state')
                             .attr('d', ausPath)
                             .attr('fill', d => {
-                                // You may need to adjust the property name based on your aust.json
-                                const stateName = d.properties.name || d.properties.STATE_NAME; 
-                                return attacksByState[stateName] ? '#ff0000' : '#ccc';
+                                const stateName = d.properties.STATE_NAME;
+                                const attackCount = attacksByState[stateName] || 0;
+                                return attackCount > 0 ? stateColorScale(attackCount) : '#ccc';
                             })
                             .on('mouseover', function(event, d) {
                                 const stateName = d.properties.name || d.properties.STATE_NAME;
@@ -506,6 +679,54 @@ Promise.all([
                                 const stateName = d.properties.name || d.properties.STATE_NAME;
                                 // Show state-specific shark attack data
                             });
+                        
+                        const stateData = sharkData.filter(d => 
+                            d.country === "AUSTRALIA"
+                        );
+        
+                        // ATTACK TYPES
+                        const attackTypes = {};
+                        stateData.forEach(d => {
+                            const type = d.type || 'Unknown';
+                            attackTypes[type] = (attackTypes[type] || 0) + 1;
+                        });
+        
+                        // Convert to array for D3
+                        const typeData = Object.entries(attackTypes).map(([type, count]) => ({
+                            type,
+                            count
+                        })).sort((a, b) => b.count - a.count);
+        
+                        // ATTACK FATALITY
+                        const attackfatality = {};
+                        stateData.forEach(d => {
+                            const fatal_y_n = d.fatal_y_n || 'Unknown';
+                            attackfatality[fatal_y_n] = (attackfatality[fatal_y_n] || 0) + 1;
+                        });
+        
+                        // Convert to array for D3
+                        const fatalityData = Object.entries(attackfatality).map(([fatal_y_n, count]) => ({
+                            fatal_y_n,
+                            count
+                        })).sort((a, b) => b.count - a.count);
+        
+                        // VICTIMS ACTIVITY
+                        const victimsActivity = {};
+                        stateData.forEach(d => {
+                            const general_activity = d.general_activity || 'Unknown';
+                            victimsActivity[general_activity] = (victimsActivity[general_activity] || 0) + 1;
+                        });
+        
+                        // Convert to array for D3
+                        const activityData = Object.entries(victimsActivity).map(([general_activity, count]) => ({
+                            general_activity,
+                            count
+                        })).sort((a, b) => b.count - a.count);
+        
+                        // Create bar chart
+                        charts.createTypeBarChart(typeData, "AUSTRALIA");
+                        charts.createFatalityBarChart(fatalityData, "AUSTRALIA");
+                        charts.createActivityBarChart(activityData, "AUSTRALIA");
                             
                         // Update info panel
                         infoDiv.html(`
