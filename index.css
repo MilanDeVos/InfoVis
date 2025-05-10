@@ -16,6 +16,10 @@ h1 {
     font-size: 19px;
     font-weight: bold; 
 }
+.state-label {
+    font-size: 19px;
+    font-weight: bold; 
+}
 #barchart-container-type{
     position: absolute; 
     top: 70%;

@@ -126,7 +126,7 @@ Promise.all([
                     
                     // Create Albers USA projection
                     const usProjection = d3.geoAlbersUsa()
-                        .translate([width/2, height/3])
+                        .translate([width/2, height/4])
                         .scale(width/2);
                         
                     const usPath = d3.geoPath(usProjection);
@@ -547,7 +547,7 @@ Promise.all([
                         
                         // Create Albers USA projection
                         const usProjection = d3.geoAlbersUsa()
-                        .translate([width/2, height/3])
+                        .translate([width/2, height/4])
                         .scale(width/2);
                             
                         const usPath = d3.geoPath(usProjection);
