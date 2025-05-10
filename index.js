@@ -176,7 +176,7 @@ Promise.all([
                                 .attr('class', 'state-label')
                                 .attr('x', '50%')
                                 .attr('text-anchor', 'middle')
-                                .attr('y', '60%')
+                                .attr('y', '55%')
                                 .text(`${stateName}: ${attackCount} Attacks`);
                         })
                         .on('mouseout', function() {
@@ -231,10 +231,13 @@ Promise.all([
                     charts.createFatalityBarChart(fatalityData, "UNITED STATES OF AMERICA");
                     charts.createActivityBarChart(activityData, "UNITED STATES OF AMERICA");
                         
-                    // Update info panel for USA view
+                    const TotalAttacks = attacksByCountry["United States of America"] || 0;
+
+                    // Update info panel
                     infoDiv.html(`
-                        <h2>United States</h2>
-                        <p>Click on a state to see details</p>
+                        <h2>Australia</h2>
+                        <p>Shark attacks by state/territory</p>
+                        <p>Total shark attacks: ${TotalAttacks}</p>
                         <button id="reset-btn">Reset Map</button>
                     `);
                     
@@ -294,7 +297,7 @@ Promise.all([
                                 .attr('class', 'state-label')
                                 .attr('x', '50%')
                                 .attr('text-anchor', 'middle')
-                                .attr('y', '60%')
+                                .attr('y', '55%')
                                 .text(`${stateName}: ${attackCount} Attacks`);
                         })
                         .on('mouseout', function() {
@@ -354,10 +357,13 @@ Promise.all([
                     charts.createFatalityBarChart(fatalityData, "AUSTRALIA");
                     charts.createActivityBarChart(activityData, "AUSTRALIA");
 
+                    const TotalAttacks = attacksByCountry["Australia"] || 0;
+
                     // Update info panel
                     infoDiv.html(`
                         <h2>Australia</h2>
                         <p>Shark attacks by state/territory</p>
+                        <p>Total shark attacks: ${TotalAttacks}</p>
                         <button id="reset-btn">Reset Map</button>
                     `);
                     
@@ -565,7 +571,7 @@ Promise.all([
                                     .attr('class', 'state-label')
                                     .attr('x', '50%')
                                     .attr('text-anchor', 'middle')
-                                    .attr('y', '60%')
+                                    .attr('y', '55%')
                                     .text(`${stateName}: ${attackCount} Attacks`);
                             })
                             .on('mouseout', function() {
@@ -620,13 +626,16 @@ Promise.all([
                         charts.createFatalityBarChart(fatalityData, "UNITED STATES OF AMERICA");
                         charts.createActivityBarChart(activityData, "UNITED STATES OF AMERICA");
                             
-                        // Update info panel for USA view
+                        const TotalAttacks = attacksByCountry["United States of America"] || 0;
+
+                        // Update info panel
                         infoDiv.html(`
-                            <h2>United States</h2>
-                            <p>Click on a state to see details</p>
+                            <h2>Australia</h2>
+                            <p>Shark attacks by state/territory</p>
+                            <p>Total shark attacks: ${TotalAttacks}</p>
                             <button id="reset-btn">Reset Map</button>
                         `);
-                        
+                            
                         // Reset button handler
                         d3.select('#reset-btn').on('click', resetMap);
                     });
@@ -683,7 +692,7 @@ Promise.all([
                                     .attr('class', 'state-label')
                                     .attr('x', '50%')
                                     .attr('text-anchor', 'middle')
-                                    .attr('y', '60%')
+                                    .attr('y', '55%')
                                     .text(`${stateName}: ${attackCount} Attacks`);
                             })
                             .on('mouseout', function() {
@@ -743,10 +752,13 @@ Promise.all([
                         charts.createFatalityBarChart(fatalityData, "AUSTRALIA");
                         charts.createActivityBarChart(activityData, "AUSTRALIA");
                             
+                        const TotalAttacks = attacksByCountry["Australia"] || 0;
+
                         // Update info panel
                         infoDiv.html(`
                             <h2>Australia</h2>
                             <p>Shark attacks by state/territory</p>
+                            <p>Total shark attacks: ${TotalAttacks}</p>
                             <button id="reset-btn">Reset Map</button>
                         `);
                         
