@@ -839,8 +839,8 @@ Promise.all([
         d3.select("#barchart-container-fatal_y_n p").remove();
         d3.select("#barchart-container-activity svg").remove();
         d3.select("#barchart-container-activity p").remove();
-        //d3.select("#barchart-container-area svg").remove();
-        //d3.select("#barchart-container-area p").remove();
+        d3.select("#barchart-container-area svg").remove();
+        d3.select("#barchart-container-area p").remove();
         infoDiv.html('');
     }
 

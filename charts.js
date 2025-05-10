@@ -239,8 +239,10 @@ export function createAreaBarChart(data, countryName) {
 
     // Margins and dimensions (you can adjust these)
     const margin = { top: 40, right: 60, bottom: 70, left: 100 };
-    const width = 300 - margin.left - margin.right;
-    const height = 500 - margin.top - margin.bottom;
+    const width = 350 - margin.left - margin.right;
+    const numberOfAreas = new Set(data.map(d => d.area)).size;
+    const height = numberOfAreas*30;
+    //const height = 500 - margin.top - margin.bottom;
 
     // Create SVG
     const svg = d3.select('#barchart-container-area')
@@ -256,8 +258,10 @@ export function createAreaBarChart(data, countryName) {
         .domain(percentageData.map(d => d.area))
         .padding(0.2);
 
-    svg.append("g")
-        .call(d3.axisLeft(y));
+        svg.append("g")
+        .call(d3.axisLeft(y))
+        .selectAll("text")
+        .attr("transform", "rotate(-45)")
 
     // X-axis (percentages)
     const x = d3.scaleLinear()
@@ -270,6 +274,7 @@ export function createAreaBarChart(data, countryName) {
             .tickValues([0, 20, 40, 60, 80, 100])
             .tickFormat(d => `${d}%`) // Show percentages
         );
+    
     
     // Bars (horizontal)
     svg.selectAll("rect")
