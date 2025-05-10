@@ -1,14 +1,24 @@
 import * as charts from './charts.js';
 
-const width = 900;
-const height = 600;
+const width = window.innerWidth * 0.8; 
+const height = width * 0.6 ; 
 
 const svg = d3.select('body').append('svg').attr('width', width).attr('height', height);
 
-const projection = d3.geoMercator().scale(140).translate([width/2, height*2/3]);
+const projection = d3.geoMercator().scale(width/12).translate([width/2, height/2.5]);
 const path = d3.geoPath(projection);
 
 const g = svg.append('g');
+
+// 2. Add clipPath
+svg.append("defs").append("clipPath")
+    .attr("id", "clip-bottom")
+    .append("rect")
+    .attr("width", width)
+    .attr("height", height * 0.65) // Show 90% of height
+    .attr("y", 0);
+
+g.attr("clip-path", "url(#clip-bottom)");
 
 // Maak een div voor de informatie rechts
 const infoDiv = d3.select('body').append('div')
@@ -88,13 +98,14 @@ Promise.all([
                 .attr('class', 'country-label')
                 .attr('x', '50%')
                 .attr('text-anchor', 'middle')
-                .attr('y', '90%')
+                .attr('y', '70%')
                 .text(`${countryName}: ${attackCount} Attacks`);
         })
         .on('mouseout', function() {
             d3.selectAll('.country-label').remove();
         })
         .on('click', function(event, clickedCountry) {
+            d3.selectAll('.country-label').remove();
             // Check if a country is already selected
             if (d3.select('.country-selected').size() > 0) {
                 return; // Exit if a country is already selected
@@ -118,8 +129,8 @@ Promise.all([
                     
                     // Create Albers USA projection
                     const usProjection = d3.geoAlbersUsa()
-                        .translate([width/2, height/2])
-                        .scale(width);
+                        .translate([width/2, height/3])
+                        .scale(width/2);
                         
                     const usPath = d3.geoPath(usProjection);
                     
@@ -165,7 +176,7 @@ Promise.all([
                                 .attr('class', 'state-label')
                                 .attr('x', '50%')
                                 .attr('text-anchor', 'middle')
-                                .attr('y', '95%')
+                                .attr('y', '60%')
                                 .text(`${stateName}: ${attackCount} Attacks`);
                         })
                         .on('mouseout', function() {
@@ -240,8 +251,7 @@ Promise.all([
                     g.selectAll('.country').remove();
                     
                     // Create projection specifically for Australia
-                    const ausProjection = d3.geoMercator()
-                        .fitSize([width, height], ausData); // Automatically fits Australia to view
+                    const ausProjection = d3.geoMercator().scale(width/2).translate([-width/1.5, -height/8]);
                     
                     const ausPath = d3.geoPath(ausProjection);
                     
@@ -284,7 +294,7 @@ Promise.all([
                                 .attr('class', 'state-label')
                                 .attr('x', '50%')
                                 .attr('text-anchor', 'middle')
-                                .attr('y', '95%')
+                                .attr('y', '60%')
                                 .text(`${stateName}: ${attackCount} Attacks`);
                         })
                         .on('mouseout', function() {
@@ -354,7 +364,12 @@ Promise.all([
                     d3.select('#reset-btn').on('click', resetMap);
                 });
             } else { // on click any other country just zoom
-
+                const countryPaths = g.selectAll('path')
+                .on('mouseover', function(event, d) {
+                })
+                .on('mouseout', function() {
+                    d3.selectAll('.state-label').remove();
+                });
                 // Verwijder alle landen behalve het aangeklikte
                 countryPaths.filter(d => d !== clickedCountry).remove();
                 
@@ -474,13 +489,14 @@ Promise.all([
                     .attr('class', 'country-label')
                     .attr('x', '50%')
                     .attr('text-anchor', 'middle')
-                    .attr('y', '90%')
+                    .attr('y', '70%')
                     .text(`${countryName}: ${attackCount} Attacks`);
             })
             .on('mouseout', function() {
                 d3.selectAll('.country-label').remove();
             })
             .on('click', function(event, clickedCountry) {
+                d3.selectAll('.country-label').remove();
                 // Check if a country is already selected
                 if (d3.select('.country-selected').size() > 0) {
                     return; // Exit if a country is already selected
@@ -502,8 +518,8 @@ Promise.all([
                         
                         // Create Albers USA projection
                         const usProjection = d3.geoAlbersUsa()
-                            .translate([width/2, height/2])
-                            .scale(width);
+                        .translate([width/2, height/3])
+                        .scale(width/2);
                             
                         const usPath = d3.geoPath(usProjection);
                         
@@ -549,7 +565,7 @@ Promise.all([
                                     .attr('class', 'state-label')
                                     .attr('x', '50%')
                                     .attr('text-anchor', 'middle')
-                                    .attr('y', '95%')
+                                    .attr('y', '60%')
                                     .text(`${stateName}: ${attackCount} Attacks`);
                             })
                             .on('mouseout', function() {
@@ -624,8 +640,7 @@ Promise.all([
                         g.selectAll('.country').remove();
                         
                         // Create projection specifically for Australia
-                        const ausProjection = d3.geoMercator()
-                            .fitSize([width, height], ausData); // Automatically fits Australia to view
+                        const ausProjection = d3.geoMercator().scale(width/2).translate([-width/1.5, -height/8]);
                         
                         const ausPath = d3.geoPath(ausProjection);
                         
@@ -668,7 +683,7 @@ Promise.all([
                                     .attr('class', 'state-label')
                                     .attr('x', '50%')
                                     .attr('text-anchor', 'middle')
-                                    .attr('y', '95%')
+                                    .attr('y', '60%')
                                     .text(`${stateName}: ${attackCount} Attacks`);
                             })
                             .on('mouseout', function() {
@@ -738,7 +753,12 @@ Promise.all([
                         d3.select('#reset-btn').on('click', resetMap);
                     });
                 } else {
-
+                    g.selectAll('path')
+                        .on('mouseover', function(event, d) {
+                        })
+                        .on('mouseout', function() {
+                            d3.selectAll('.country-label').remove();
+                        });
                     // Verwijder alle landen behalve het aangeklikte
                     g.selectAll('.country').filter(d => d !== clickedCountry).remove();
                     
