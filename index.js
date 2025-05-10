@@ -24,9 +24,23 @@ g.attr("clip-path", "url(#clip-bottom)");
 const infoDiv = d3.select('body').append('div')
   .attr('class', 'info-panel')
   .style('position', 'absolute')
-  .style('left', '60%')
+  .style('left', '70%')
   .style('top', '20px')
   .style('width', '400px');
+
+const beginInfo = `
+    <div class="country-info">
+        <h2>Should we be scared of shark attacks?</h2>
+        <p class="stat-item">
+            Every year, about 100 people are attacked by sharks.
+            These are usually not fatal.
+        </p>
+        <p class="stat-item">
+            Every year, more than 1 million people die in car accidents worldwide.
+        </p>
+    </div>
+    `;
+infoDiv.html(beginInfo)
 
 Promise.all([
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'),
@@ -922,7 +936,9 @@ Promise.all([
         d3.select("#barchart-container-activity p").remove();
         d3.select("#barchart-container-area svg").remove();
         d3.select("#barchart-container-area p").remove();
-        infoDiv.html('');
+        //infoDiv.html('');
+        infoDiv.html(beginInfo)
+        
     }
 
 });
