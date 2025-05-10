@@ -51,6 +51,14 @@ export function createTypeBarChart(data, countryName) {
             .tickValues([0, 20, 40, 60, 80, 100])
             .tickFormat(d => `${d}%`) // Toon percentages
         );
+
+    // Find the maximum value in your data
+    const maxValue = d3.max(percentageData, d => d.percentage);
+    console.log(percentageData);
+    console.log(maxValue);
+
+    // Create color scale
+    const colorScale = d => d.percentage === maxValue ? "#0000ff" : "#ccc";
     
     // Bars (vertical)
     svg.selectAll("rect")
@@ -61,7 +69,7 @@ export function createTypeBarChart(data, countryName) {
         .attr("y", d => y(d.percentage)) // Begin bovenaan
         .attr("width", x.bandwidth())
         .attr("height", d => height - y(d.percentage)) // Hoogte = percentage
-        .attr("fill", "#ccc");
+        .attr("fill", d => colorScale(d));
 
     
     // Title
@@ -126,6 +134,14 @@ export function createFatalityBarChart(data, countryName) {
             .tickFormat(d => `${d}%`) // Toon percentages
         );
     
+    // Find the maximum value in your data
+    const maxValue = d3.max(percentageData, d => d.percentage);
+    console.log(percentageData);
+    console.log(maxValue);
+
+    // Create color scale
+    const colorScale = d => d.percentage === maxValue ? "#0000ff" : "#ccc";
+    
     // Bars (vertical)
     svg.selectAll("rect")
         .data(percentageData)
@@ -135,7 +151,7 @@ export function createFatalityBarChart(data, countryName) {
         .attr("y", d => y(d.percentage)) // Begin bovenaan
         .attr("width", x.bandwidth())
         .attr("height", d => height - y(d.percentage)) // Hoogte = percentage
-        .attr("fill", "#ccc"); 
+        .attr("fill", d => colorScale(d)); 
 
     
     // Title
@@ -200,6 +216,14 @@ export function createActivityBarChart(data, countryName) {
             .tickFormat(d => `${d}%`) // Toon percentages
         );
     
+    // Find the maximum value in your data
+    const maxValue = d3.max(percentageData, d => d.percentage);
+    console.log(percentageData);
+    console.log(maxValue);
+
+    // Create color scale
+    const colorScale = d => d.percentage === maxValue ? "#0000ff" : "#ccc";
+    
     // Bars (vertical)
     svg.selectAll("rect")
         .data(percentageData)
@@ -209,7 +233,7 @@ export function createActivityBarChart(data, countryName) {
         .attr("y", d => y(d.percentage)) // Begin bovenaan
         .attr("width", x.bandwidth())
         .attr("height", d => height - y(d.percentage)) // Hoogte = percentage
-        .attr("fill", "#ccc"); 
+        .attr("fill", d => colorScale(d)); 
 
     
     // Title
