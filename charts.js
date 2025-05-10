@@ -17,8 +17,8 @@ export function createTypeBarChart(data, countryName) {
 
     // Margins and dimensions (you can adjust these)
     const margin = { top: 40, right: 60, bottom: 70, left: 100 };
-    const width = 300 - margin.left - margin.right;
-    const height = 200 - margin.top - margin.bottom;
+    const width = window.innerWidth*0.2 - margin.left - margin.right;
+    const height = window.innerHeight*0.3 - margin.top - margin.bottom;
 
     // Create SVG
     const svg = d3.select('#barchart-container-type')
@@ -91,8 +91,8 @@ export function createFatalityBarChart(data, countryName) {
 
     // Margins and dimensions (you can adjust these)
     const margin = { top: 40, right: 60, bottom: 70, left: 100 };
-    const width = 300 - margin.left - margin.right;
-    const height = 200 - margin.top - margin.bottom;
+    const width = window.innerWidth*0.2 - margin.left - margin.right;
+    const height = window.innerHeight*0.3 - margin.top - margin.bottom;
 
     // Create SVG
     const svg = d3.select('#barchart-container-fatal_y_n')
@@ -165,8 +165,8 @@ export function createActivityBarChart(data, countryName) {
 
     // Margins and dimensions (you can adjust these)
     const margin = { top: 40, right: 60, bottom: 70, left: 100 };
-    const width = 300 - margin.left - margin.right;
-    const height = 200 - margin.top - margin.bottom;
+    const width = window.innerWidth*0.2 - margin.left - margin.right;
+    const height = window.innerHeight*0.3 - margin.top - margin.bottom;
 
     // Create SVG
     const svg = d3.select('#barchart-container-activity')
