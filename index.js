@@ -26,10 +26,7 @@ const infoDiv = d3.select('body').append('div')
   .style('position', 'absolute')
   .style('left', '60%')
   .style('top', '20px')
-  .style('width', '400px')
-  .style('padding', '10px')
-  .style('background', '#f0f0f0')
-  .style('border', '1px solid #ccc');
+  .style('width', '400px');
 
 Promise.all([
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'),
@@ -235,10 +232,19 @@ Promise.all([
 
                     // Update info panel
                     infoDiv.html(`
-                        <h2>Australia</h2>
-                        <p>Shark attacks by state/territory</p>
-                        <p>Total shark attacks: ${TotalAttacks}</p>
-                        <button id="reset-btn">Reset Map</button>
+                        <div class="country-info">
+                            <h2 class="country-title">United States of America</h2>
+                            <div class="info-stats">
+                                <p class="stat-item">
+                                    <span class="stat-icon">🦈</span>
+                                    <span class="stat-value">${TotalAttacks}</span>
+                                    <span class="stat-label">Total shark attacks</span>
+                                </p>
+                            </div>
+                            <button id="reset-btn" class="reset-button">
+                                <i class="fas fa-sync-alt"></i> Reset Map
+                            </button>
+                        </div>
                     `);
                     
                     // Reset button handler
@@ -361,10 +367,19 @@ Promise.all([
 
                     // Update info panel
                     infoDiv.html(`
-                        <h2>Australia</h2>
-                        <p>Shark attacks by state/territory</p>
-                        <p>Total shark attacks: ${TotalAttacks}</p>
-                        <button id="reset-btn">Reset Map</button>
+                        <div class="country-info">
+                            <h2 class="country-title">Australia</h2>
+                            <div class="info-stats">
+                                <p class="stat-item">
+                                    <span class="stat-icon">🦈</span>
+                                    <span class="stat-value">${TotalAttacks}</span>
+                                    <span class="stat-label">Total shark attacks</span>
+                                </p>
+                            </div>
+                            <button id="reset-btn" class="reset-button">
+                                <i class="fas fa-sync-alt"></i> Reset Map
+                            </button>
+                        </div>
                     `);
                     
                     d3.select('#reset-btn').on('click', resetMap);
@@ -381,9 +396,7 @@ Promise.all([
                 
                 // Pas de projectie aan om het geselecteerde land naar links te verplaatsen
                 const newProjection = d3.geoMercator()
-                    .scale(140)
-                    .translate([width/4, height*2/3]) // Verplaats naar links (1/4 in plaats van 1/2)
-                    .fitSize([width*2/3, height*2/3], {type: "FeatureCollection", features: [clickedCountry]});
+                    .fitSize([width/1.2, height/2], {type: "FeatureCollection", features: [clickedCountry]});
                 
                 // Update het pad van het overgebleven land
                 d3.select(this)
@@ -456,9 +469,19 @@ Promise.all([
                 //charts.createAreaBarChart(areaData, countryName);
 
                 infoDiv.html(`
-                    <h2>${countryName}</h2>
-                    <p>Total shark attacks: ${attackCount}</p>
-                    <button id="reset-btn">Reset Map</button>
+                    <div class="country-info">
+                        <h2 class="country-title">${countryName}</h2>
+                        <div class="info-stats">
+                            <p class="stat-item">
+                                <span class="stat-icon">🦈</span>
+                                <span class="stat-value">${attackCount}</span>
+                                <span class="stat-label">Total shark attacks</span>
+                            </p>
+                        </div>
+                        <button id="reset-btn" class="reset-button">
+                            <i class="fas fa-sync-alt"></i> Reset Map
+                        </button>
+                    </div>
                 `);
                 
                 // Voeg event listener toe voor reset knop
@@ -630,10 +653,19 @@ Promise.all([
 
                         // Update info panel
                         infoDiv.html(`
-                            <h2>Australia</h2>
-                            <p>Shark attacks by state/territory</p>
-                            <p>Total shark attacks: ${TotalAttacks}</p>
-                            <button id="reset-btn">Reset Map</button>
+                            <div class="country-info">
+                                <h2 class="country-title">United States of America</h2>
+                                <div class="info-stats">
+                                    <p class="stat-item">
+                                        <span class="stat-icon">🦈</span>
+                                        <span class="stat-value">${TotalAttacks}</span>
+                                        <span class="stat-label">Total shark attacks</span>
+                                    </p>
+                                </div>
+                                <button id="reset-btn" class="reset-button">
+                                    <i class="fas fa-sync-alt"></i> Reset Map
+                                </button>
+                            </div>
                         `);
                             
                         // Reset button handler
@@ -756,10 +788,19 @@ Promise.all([
 
                         // Update info panel
                         infoDiv.html(`
-                            <h2>Australia</h2>
-                            <p>Shark attacks by state/territory</p>
-                            <p>Total shark attacks: ${TotalAttacks}</p>
-                            <button id="reset-btn">Reset Map</button>
+                            <div class="country-info">
+                                <h2 class="country-title">Australia</h2>
+                                <div class="info-stats">
+                                    <p class="stat-item">
+                                        <span class="stat-icon">🦈</span>
+                                        <span class="stat-value">${TotalAttacks}</span>
+                                        <span class="stat-label">Total shark attacks</span>
+                                    </p>
+                                </div>
+                                <button id="reset-btn" class="reset-button">
+                                    <i class="fas fa-sync-alt"></i> Reset Map
+                                </button>
+                            </div>
                         `);
                         
                         d3.select('#reset-btn').on('click', resetMap);
@@ -776,9 +817,7 @@ Promise.all([
                     
                     // Pas de projectie aan
                     const newProjection = d3.geoMercator()
-                        .scale(140)
-                        .translate([width/4, height*2/3])
-                        .fitSize([width*2/3, height*2/3], {type: "FeatureCollection", features: [clickedCountry]});
+                        .fitSize([width/1.2, height/2], {type: "FeatureCollection", features: [clickedCountry]});
                     
                     // Update het pad van het overgebleven land
                     d3.select(this)
@@ -851,9 +890,19 @@ Promise.all([
                     //charts.createAreaBarChart(areaData, countryName);
                         
                     infoDiv.html(`
-                        <h2>${countryName}</h2>
-                        <p>Total shark attacks: ${attackCount}</p>
-                        <button id="reset-btn">Reset Map</button>
+                        <div class="country-info">
+                            <h2 class="country-title">${countryName}</h2>
+                            <div class="info-stats">
+                                <p class="stat-item">
+                                    <span class="stat-icon">🦈</span>
+                                    <span class="stat-value">${attackCount}</span>
+                                    <span class="stat-label">Total shark attacks</span>
+                                </p>
+                            </div>
+                            <button id="reset-btn" class="reset-button">
+                                <i class="fas fa-sync-alt"></i> Reset Map
+                            </button>
+                        </div>
                     `);
                     
                     d3.select('#reset-btn').on('click', function() {

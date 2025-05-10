@@ -44,3 +44,73 @@ h1 {
     width: 300px;
     height: 300px;
 }
+#infoDiv {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+.country-info {
+    font-family: 'Arial', sans-serif;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 250px;
+}
+
+.country-title {
+    color: #2c3e50;
+    margin-top: 0;
+    border-bottom: 2px solid #f1f1f1;
+    padding-bottom: 10px;
+}
+
+.info-stats {
+    margin: 15px 0;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.stat-icon {
+    font-size: 1.5em;
+    margin-right: 10px;
+}
+
+.stat-value {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-right: 5px;
+    color: #e74c3c;
+}
+
+.stat-label {
+    color: #7f8c8d;
+}
+
+.reset-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.reset-button:hover {
+    background-color: #2980b9;
+}
+
+/* If using Font Awesome for the icon */
+.fas {
+    font-size: 0.9em;
+}
