@@ -38,6 +38,9 @@ const beginInfo = `
         <p class="stat-item">
             Every year, more than 1 million people die in car accidents worldwide.
         </p>
+        <p class="stat-item">
+            Every year, more than 320.000 people drown worldwide.
+        </p>
     </div>
     `;
 infoDiv.html(beginInfo)
