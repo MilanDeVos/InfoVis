@@ -319,3 +319,220 @@ export function createAreaBarChart(data, countryName) {
         .attr("text-anchor", "middle")
         .text("Specific location of attack");
 }
+
+
+export function createStackedBarChart(data, countryName) {
+
+    if (!data || data.length === 0) {
+        d3.select('#barchart-container-stacked')
+            .append("p")
+            .text("No activity data available");
+        return;
+    }
+
+    const margin = { top: 40, right: 160, bottom: 70, left: 100 };
+    const width = window.innerWidth * 0.45 - margin.left - margin.right;
+    const height = window.innerHeight * 0.5 - margin.top - margin.bottom;
+
+    const svg = d3.select('#barchart-container-stacked')
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scaleBand()
+        .range([0, width])
+        .domain(data.map(d => d.activity))
+        .padding(0.2);
+
+    svg.append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+        .attr("transform", "rotate(-45)")
+        .style("text-anchor", "end");
+
+    const y = d3.scaleLinear()
+        .range([height, 0])
+        .domain([0, 100]);
+
+
+    svg.append("g")
+        .call(d3.axisLeft(y)
+            .tickValues([0, 20, 40, 60, 80, 100])
+            .tickFormat(d => `${d}%`)
+        );
+
+    // Get unique types from the data
+    const allTypes = Array.from(new Set(
+        data.flatMap(d => d.types.map(t => t.type))
+    ));
+
+    const color = d3.scaleOrdinal()
+        .domain(allTypes)
+        .range(d3.schemeCategory10);
+
+    /* const stack = d3.stack()
+        .keys(allTypes)
+        .value((d, key) => {
+            const match = d.types.find(t => t.type === key);
+            return match ? match.percentage : 0;
+        }); */
+    
+    const stack = d3.stack()
+        .keys(allTypes)
+        .value((d, key) => {
+            const match = d.types.find(t => t.type === key);
+            return match ? match.percentage : 0;
+        });
+
+    const stackedData = stack(data);
+
+    svg.selectAll("g.layer")
+        .data(stackedData)
+        .enter()
+        .append("g")
+        .attr("class", "layer")
+        .attr("fill", d => color(d.key))
+        .selectAll("rect")
+        .data(d => d)
+        .enter()
+        .append("rect")
+        .attr("x", d => x(d.data.activity))
+        .attr("y", d => y(d[1]))
+        .attr("height", d => y(d[0]) - y(d[1]))
+        .attr("width", x.bandwidth());
+
+    // Title
+    svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", -10)
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .text(`Activity of Victim in ${countryName}`);
+
+    // Legend
+    const legend = svg.selectAll(".legend")
+        .data(allTypes)
+        .enter().append("g")
+        .attr("class", "legend")
+        .attr("transform", (d, i) => `translate(${width + 20},${i * 20})`);
+
+    legend.append("rect")
+        .attr("x", 0)
+        .attr("width", 18)
+        .attr("height", 18)
+        .style("fill", color);
+
+    legend.append("text")
+        .attr("x", 24)
+        .attr("y", 9)
+        .attr("dy", ".35em")
+        .style("text-anchor", "start")
+        .text(d => d);
+}
+
+export function createLineGraph(data) {
+
+    if (!data || data.length === 0) {
+        d3.select('#linechart-container')
+            .append("p")
+            .text("No yearly data available");
+        return;
+    }
+
+    const margin = { top: 40, right: 30, bottom: 50, left: 60 };
+    const width = window.innerWidth * 0.45 - margin.left - margin.right;
+    const height = window.innerHeight * 0.5 - margin.top - margin.bottom;
+
+    const svg = d3.select('#linechart-container')
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Tooltip setup
+    const tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("background", "#fff")
+        .style("padding", "6px 10px")
+        .style("border", "1px solid #ccc")
+        .style("border-radius", "4px")
+        .style("pointer-events", "none")
+        .style("opacity", 0);
+
+    // Parse the year as integer
+    data.forEach(d => {
+        d.year = +d.year;
+        d.count = +d.count;
+    });
+
+    const x = d3.scaleLinear()
+        .domain(d3.extent(data, d => d.year))
+        .range([0, width]);
+
+    const y = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d.count)])
+        .range([height, 0]);
+
+    svg.append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+
+    svg.append("g")
+        .call(d3.axisLeft(y));
+
+    const line = d3.line()
+        .x(d => x(d.year))
+        .y(d => y(d.count));
+
+    svg.append("path")
+        .datum(data)
+        .attr("fill", "none")
+        .attr("stroke", "#007acc")
+        .attr("stroke-width", 2)
+        .attr("d", line);
+
+    // Add dots
+    svg.selectAll("circle")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("cx", d => x(d.year))
+        .attr("cy", d => y(d.count))
+        .attr("r", 4)
+        .attr("fill", "#007acc")
+        .on("mouseover", (event, d) => {
+            tooltip.transition().duration(200).style("opacity", 0.9);
+            tooltip.html(`<strong>Year:</strong> ${d.year}<br><strong>Attacks:</strong> ${d.count}`)
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 28) + "px");
+        })
+        .on("mouseout", () => {
+            tooltip.transition().duration(500).style("opacity", 0);
+        });
+
+    svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", -10)
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .text("Number of Shark Attacks per Year");
+
+    svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", height + 40)
+        .attr("text-anchor", "middle")
+        .text("Year");
+
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -height / 2)
+        .attr("y", -40)
+        .attr("text-anchor", "middle")
+        .text("Number of Attacks");
+}
+

@@ -23,21 +23,21 @@ h1 {
 #barchart-container-type{
     position: absolute; 
     top: 70%;
-    left: 0%;
+    left: 120%;
     width: 300px;
     height: 300px;
 }
 #barchart-container-fatal_y_n{
     position: absolute; 
-    top: 70%;
-    left: 30%;
+    top: 45%;
+    left: 70%;
     width: 300px;
     height: 300px;
 }
 #barchart-container-activity{
     position: absolute; 
     top: 70%;
-    left: 60%;
+    left: 120%;
     width: 300px;
     height: 300px;
 }
@@ -48,6 +48,23 @@ h1 {
     width: 300px;
     height: 300px;
 }
+
+#barchart-container-stacked{
+    position: absolute; 
+    top: 70%; 
+    left: 0%;
+    width: 300px;
+    height: 300px;
+}
+
+#linechart-container{
+    position: absolute;
+    top: 70%;
+    left: 43%;
+    width: 300px;
+    height: 300px;
+}
+    
 #infoDiv {
     background: transparent !important;
     border: none !important;

@@ -244,6 +244,7 @@ Promise.all([
                     charts.createTypeBarChart(typeData, "UNITED STATES OF AMERICA");
                     charts.createFatalityBarChart(fatalityData, "UNITED STATES OF AMERICA");
                     charts.createActivityBarChart(activityData, "UNITED STATES OF AMERICA");
+                    //charts.createStackedBarChart(combinedData, "UNITED STATES OF AMERICA");
                         
                     const TotalAttacks = attacksByCountry["United States of America"] || 0;
 
@@ -379,6 +380,7 @@ Promise.all([
                     charts.createTypeBarChart(typeData, "AUSTRALIA");
                     charts.createFatalityBarChart(fatalityData, "AUSTRALIA");
                     charts.createActivityBarChart(activityData, "AUSTRALIA");
+                    //charts.createStackedBarChart(combinedData, "AUSTRALIA");
 
                     const TotalAttacks = attacksByCountry["Australia"] || 0;
 
@@ -479,10 +481,107 @@ Promise.all([
                     count
                 })).sort((a, b) => b.count - a.count);
 
+                /* Dit was de data nodig voor als we de bars allemaal 100% willen hebben.
+                const combinedData = activityData.map(activity => {
+                    const types = countryData
+                        .filter(d => d.general_activity === activity.general_activity)
+                        .reduce((acc, d) => {
+                            const type = d.type || 'Unknown';
+                            acc[type] = (acc[type] || 0) + 1;
+                            return acc;
+                        }, {});
+
+                    return {
+                        activity: activity.general_activity,
+                        types: Object.entries(types).map(([type, count]) => ({
+                            type,
+                            count,
+                            percentage: (count / activity.count) * 100 // Calculate percentage for each type
+                        }))
+                    };
+                });
+*/
+
+                const totalAttacks = activityData.reduce((sum, d) => sum + d.count, 0);
+
+                const combinedData = activityData.map(activity => {
+                    const activityTotal = activity.count;
+                    const types = countryData
+                        .filter(d => d.general_activity === activity.general_activity)
+                        .reduce((acc, d) => {
+                            const type = d.type || 'Unknown';
+                            acc[type] = (acc[type] || 0) + 1;
+                            return acc;
+                        }, {});
+
+                    return {
+                        activity: activity.general_activity,
+                        totalPercentage: (activityTotal / totalAttacks) * 100,
+                        types: Object.entries(types).map(([type, count]) => ({
+                            type,
+                            count,
+                            percentage: (count / totalAttacks) * 100 // key change: scale to total, not activity
+                        }))
+                    };
+                });
+
+                //line chart year counts per year
+                const yearCounts = {};
+                let minYear = Infinity;
+                let maxYear = -Infinity;
+
+                countryData.forEach(entry => {
+                    const year = parseInt(entry.year);
+                    if (!isNaN(year)) {
+                        yearCounts[year] = (yearCounts[year] || 0) + 1;
+                        if (year < minYear) minYear = year;
+                        if (year > maxYear) maxYear = year;
+                    }
+                });
+
+                // Fill in missing years with 0
+                const lineChartData = [];
+                for (let year = minYear; year <= maxYear; year++) {
+                    lineChartData.push({
+                        year,
+                        count: yearCounts[year] || 0
+                    });
+                }
+
+                /*
+                    //per 5 years interval:
+                    const intervalCounts = {};
+                        let minYear = Infinity;
+                        let maxYear = -Infinity;
+
+                        countryData.forEach(entry => {
+                            const year = parseInt(entry.year);
+                            if (!isNaN(year)) {
+                                const intervalStart = Math.floor(year / 5) * 5;
+                                intervalCounts[intervalStart] = (intervalCounts[intervalStart] || 0) + 1;
+
+                                if (year < minYear) minYear = year;
+                                if (year > maxYear) maxYear = year;
+                            }
+                        });
+
+                        // Fill in missing intervals with 0
+                        const lineChartData = [];
+                        for (let year = Math.floor(minYear / 5) * 5; year <= maxYear; year += 5) {
+                            lineChartData.push({
+                                year,
+                                count: intervalCounts[year] || 0
+                            });
+                        }*/
+
+
                 // Create bar chart
                 charts.createTypeBarChart(typeData, countryName);
                 charts.createFatalityBarChart(fatalityData, countryName);
                 charts.createActivityBarChart(activityData, countryName);
+                charts.createStackedBarChart(combinedData, countryName);
+                charts.createLineGraph(lineChartData);
+                console.log(combinedData);
                 //charts.createAreaBarChart(areaData, countryName);
 
                 infoDiv.html(`
@@ -665,6 +764,7 @@ Promise.all([
                         charts.createTypeBarChart(typeData, "UNITED STATES OF AMERICA");
                         charts.createFatalityBarChart(fatalityData, "UNITED STATES OF AMERICA");
                         charts.createActivityBarChart(activityData, "UNITED STATES OF AMERICA");
+                        //charts.createStackedBarChart(combinedData, "UNITED STATES OF AMERICA");
                             
                         const TotalAttacks = attacksByCountry["United States of America"] || 0;
 
@@ -800,6 +900,8 @@ Promise.all([
                         charts.createTypeBarChart(typeData, "AUSTRALIA");
                         charts.createFatalityBarChart(fatalityData, "AUSTRALIA");
                         charts.createActivityBarChart(activityData, "AUSTRALIA");
+                        //charts.createStackedBarChart(combinedData, "AUSTRALIA");
+
                             
                         const TotalAttacks = attacksByCountry["Australia"] || 0;
 
@@ -900,10 +1002,60 @@ Promise.all([
                         count
                     })).sort((a, b) => b.count - a.count);
 
+                    // Combine activityData and typeData
+                    // Combine activity and type data
+                    const totalAttacks = activityData.reduce((sum, d) => sum + d.count, 0);
+
+                    const combinedData = activityData.map(activity => {
+                        const activityTotal = activity.count;
+                        const types = countryData
+                            .filter(d => d.general_activity === activity.general_activity)
+                            .reduce((acc, d) => {
+                                const type = d.type || 'Unknown';
+                                acc[type] = (acc[type] || 0) + 1;
+                                return acc;
+                            }, {});
+
+                        return {
+                            activity: activity.general_activity,
+                            totalPercentage: (activityTotal / totalAttacks) * 100,
+                            types: Object.entries(types).map(([type, count]) => ({
+                                type,
+                                count,
+                                percentage: (count / totalAttacks) * 100 // key change: scale to total, not activity
+                            }))
+                        };
+                    });
+
+                    //line chart year counts per year
+                    const yearCounts = {};
+                    let minYear = Infinity;
+                    let maxYear = -Infinity;
+
+                    countryData.forEach(entry => {
+                        const year = parseInt(entry.year);
+                        if (!isNaN(year)) {
+                            yearCounts[year] = (yearCounts[year] || 0) + 1;
+                            if (year < minYear) minYear = year;
+                            if (year > maxYear) maxYear = year;
+                        }
+                    });
+
+                    // Fill in missing years with 0
+                    const lineChartData = [];
+                    for (let year = minYear; year <= maxYear; year++) {
+                        lineChartData.push({
+                            year,
+                            count: yearCounts[year] || 0
+                        });
+                    }
+
                     // Create bar chart
                     charts.createTypeBarChart(typeData, countryName);
                     charts.createFatalityBarChart(fatalityData, countryName);
                     charts.createActivityBarChart(activityData, countryName);
+                    charts.createStackedBarChart(combinedData, countryName);
+                    charts.createLineGraph(lineChartData);
                     //charts.createAreaBarChart(areaData, countryName);
                         
                     infoDiv.html(`
@@ -939,6 +1091,10 @@ Promise.all([
         d3.select("#barchart-container-activity p").remove();
         d3.select("#barchart-container-area svg").remove();
         d3.select("#barchart-container-area p").remove();
+        d3.select("#barchart-container-stacked svg").remove();
+        d3.select("#barchart-container-stacked p").remove();
+        d3.select("#linechart-container svg").remove();
+        d3.select("#linechart-container p").remove();
         //infoDiv.html('');
         infoDiv.html(beginInfo)
         
