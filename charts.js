@@ -562,10 +562,13 @@ export function createLineGraph(data) {
             .tickFormat(d3.format("d")));
 
     // Y Axis with whole numbers only
+    const yTickCount = Math.min(10, Math.max(5, yMax));
+
     svg.append("g")
         .call(d3.axisLeft(y)
-            .ticks(Math.max(5, yMax))
+            .ticks(yTickCount)
             .tickFormat(d3.format("d")));
+
 
     // Line generator
     const line = d3.line()
