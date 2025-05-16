@@ -240,13 +240,62 @@ Promise.all([
                         count
                     })).sort((a, b) => b.count - a.count);
 
+                    const TotalAttacks = attacksByCountry["United States of America"] || 0;
+
+                    // stacked barchart data
+                    const combinedData = activityData.map(activity => {
+                        const activityTotal = activity.count;
+                        const types = stateData
+                            .filter(d => d.general_activity === activity.general_activity)
+                            .reduce((acc, d) => {
+                                const type = d.type || 'Unknown';
+                                acc[type] = (acc[type] || 0) + 1;
+                                return acc;
+                            }, {});
+
+                        return {
+                            activity: activity.general_activity,
+                            totalPercentage: (activityTotal / TotalAttacks) * 100,
+                            types: Object.entries(types).map(([type, count]) => ({
+                                type,
+                                count,
+                                percentage: (count / TotalAttacks) * 100 // key change: scale to total, not activity
+                            }))
+                        };
+                    });
+
+                    //line chart year counts per year
+                    const yearCounts = {};
+                    let minYear = Infinity;
+                    let maxYear = -Infinity;
+
+                    stateData.forEach(entry => {
+                        const year = parseInt(entry.year);
+                        if (!isNaN(year)) {
+                            yearCounts[year] = (yearCounts[year] || 0) + 1;
+                            if (year < minYear) minYear = year;
+                            if (year > maxYear) maxYear = year;
+                        }
+                    });
+
+                    // Fill in all years from 1900 to 2024 with 0 if missing
+                    const lineChartData = [];
+                    //change years if dataset is bigger
+                    for (let year = 1900; year <= 2024; year++) {
+                        lineChartData.push({
+                            year,
+                            count: yearCounts[year] || 0
+                        });
+                    }
+
                     // Create bar charts
                     //charts.createTypeBarChart(typeData, "UNITED STATES OF AMERICA");
                     charts.createFatalityBarChart(fatalityData, "UNITED STATES OF AMERICA");
                     //charts.createActivityBarChart(activityData, "UNITED STATES OF AMERICA");
-                    //charts.createStackedBarChart(combinedData, "UNITED STATES OF AMERICA");
+                    charts.createStackedBarChart(combinedData, "UNITED STATES OF AMERICA");
+                    charts.createLineGraph(lineChartData);
                         
-                    const TotalAttacks = attacksByCountry["United States of America"] || 0;
+                    
 
                     // Update info panel
                     infoDiv.html(`
@@ -260,7 +309,7 @@ Promise.all([
                                 </p>
                             </div>
                             <button id="reset-btn" class="reset-button">
-                                <i class="fas fa-sync-alt"></i> Reset Map
+                                <i class="fas fa-sync-alt"></i> Back
                             </button>
                         </div>
                     `);
@@ -268,6 +317,7 @@ Promise.all([
                     // Reset button handler
                     d3.select('#reset-btn').on('click', resetMap);
                 });
+
             } else if (countryName === 'Australia') {
                 // Load Australia states data from specific GeoJSON
                 Promise.all([
@@ -376,13 +426,60 @@ Promise.all([
                         count
                     })).sort((a, b) => b.count - a.count);
 
+                    const TotalAttacks = attacksByCountry["Australia"] || 0;
+
+                    // stacked barchart data
+                    const combinedData = activityData.map(activity => {
+                        const activityTotal = activity.count;
+                        const types = stateData
+                            .filter(d => d.general_activity === activity.general_activity)
+                            .reduce((acc, d) => {
+                                const type = d.type || 'Unknown';
+                                acc[type] = (acc[type] || 0) + 1;
+                                return acc;
+                            }, {});
+
+                        return {
+                            activity: activity.general_activity,
+                            totalPercentage: (activityTotal / TotalAttacks) * 100,
+                            types: Object.entries(types).map(([type, count]) => ({
+                                type,
+                                count,
+                                percentage: (count / TotalAttacks) * 100 // key change: scale to total, not activity
+                            }))
+                        };
+                    });
+
+                    //line chart year counts per year
+                    const yearCounts = {};
+                    let minYear = Infinity;
+                    let maxYear = -Infinity;
+
+                    stateData.forEach(entry => {
+                        const year = parseInt(entry.year);
+                        if (!isNaN(year)) {
+                            yearCounts[year] = (yearCounts[year] || 0) + 1;
+                            if (year < minYear) minYear = year;
+                            if (year > maxYear) maxYear = year;
+                        }
+                    });
+
+                    // Fill in all years from 1900 to 2024 with 0 if missing
+                    const lineChartData = [];
+                    //change years if dataset is bigger
+                    for (let year = 1900; year <= 2024; year++) {
+                        lineChartData.push({
+                            year,
+                            count: yearCounts[year] || 0
+                        });
+                    }
+
                     // Create bar chart
                     //charts.createTypeBarChart(typeData, "AUSTRALIA");
                     charts.createFatalityBarChart(fatalityData, "AUSTRALIA");
                     //charts.createActivityBarChart(activityData, "AUSTRALIA");
-                    //charts.createStackedBarChart(combinedData, "AUSTRALIA");
-
-                    const TotalAttacks = attacksByCountry["Australia"] || 0;
+                    charts.createStackedBarChart(combinedData, "AUSTRALIA");
+                    charts.createLineGraph(lineChartData);
 
                     // Update info panel
                     infoDiv.html(`
@@ -396,7 +493,7 @@ Promise.all([
                                 </p>
                             </div>
                             <button id="reset-btn" class="reset-button">
-                                <i class="fas fa-sync-alt"></i> Reset Map
+                                <i class="fas fa-sync-alt"></i> Back
                             </button>
                         </div>
                     `);
@@ -483,6 +580,7 @@ Promise.all([
 
                 const totalAttacks = activityData.reduce((sum, d) => sum + d.count, 0);
 
+                // stacked barchart data
                 const combinedData = activityData.map(activity => {
                     const activityTotal = activity.count;
                     const types = countryData
@@ -534,7 +632,7 @@ Promise.all([
                 //charts.createActivityBarChart(activityData, countryName);
                 charts.createStackedBarChart(combinedData, countryName);
                 charts.createLineGraph(lineChartData);
-                console.log(combinedData);
+                //console.log(combinedData);
                 //charts.createAreaBarChart(areaData, countryName);
 
                 infoDiv.html(`
@@ -548,7 +646,7 @@ Promise.all([
                             </p>
                         </div>
                         <button id="reset-btn" class="reset-button">
-                            <i class="fas fa-sync-alt"></i> Reset Map
+                            <i class="fas fa-sync-alt"></i> Back
                         </button>
                     </div>
                 `);
@@ -713,13 +811,60 @@ Promise.all([
                             count
                         })).sort((a, b) => b.count - a.count);
 
+                        const TotalAttacks = attacksByCountry["United States of America"] || 0;
+
+                        // stacked barchart data
+                        const combinedData = activityData.map(activity => {
+                            const activityTotal = activity.count;
+                            const types = stateData
+                                .filter(d => d.general_activity === activity.general_activity)
+                                .reduce((acc, d) => {
+                                    const type = d.type || 'Unknown';
+                                    acc[type] = (acc[type] || 0) + 1;
+                                    return acc;
+                                }, {});
+
+                            return {
+                                activity: activity.general_activity,
+                                totalPercentage: (activityTotal / TotalAttacks) * 100,
+                                types: Object.entries(types).map(([type, count]) => ({
+                                    type,
+                                    count,
+                                    percentage: (count / TotalAttacks) * 100 // key change: scale to total, not activity
+                                }))
+                            };
+                        });
+
+                        //line chart year counts per year
+                        const yearCounts = {};
+                        let minYear = Infinity;
+                        let maxYear = -Infinity;
+
+                        stateData.forEach(entry => {
+                            const year = parseInt(entry.year);
+                            if (!isNaN(year)) {
+                                yearCounts[year] = (yearCounts[year] || 0) + 1;
+                                if (year < minYear) minYear = year;
+                                if (year > maxYear) maxYear = year;
+                            }
+                        });
+
+                        // Fill in all years from 1900 to 2024 with 0 if missing
+                        const lineChartData = [];
+                        //change years if dataset is bigger
+                        for (let year = 1900; year <= 2024; year++) {
+                            lineChartData.push({
+                                year,
+                                count: yearCounts[year] || 0
+                            });
+                        }
+
                         // Create bar chart
                         //charts.createTypeBarChart(typeData, "UNITED STATES OF AMERICA");
                         charts.createFatalityBarChart(fatalityData, "UNITED STATES OF AMERICA");
                         //charts.createActivityBarChart(activityData, "UNITED STATES OF AMERICA");
-                        //charts.createStackedBarChart(combinedData, "UNITED STATES OF AMERICA");
-                            
-                        const TotalAttacks = attacksByCountry["United States of America"] || 0;
+                        charts.createStackedBarChart(combinedData, "UNITED STATES OF AMERICA");
+                        charts.createLineGraph(lineChartData);
 
                         // Update info panel
                         infoDiv.html(`
@@ -733,7 +878,7 @@ Promise.all([
                                     </p>
                                 </div>
                                 <button id="reset-btn" class="reset-button">
-                                    <i class="fas fa-sync-alt"></i> Reset Map
+                                    <i class="fas fa-sync-alt"></i> Back
                                 </button>
                             </div>
                         `);
@@ -848,15 +993,61 @@ Promise.all([
                             general_activity,
                             count
                         })).sort((a, b) => b.count - a.count);
+
+                        const TotalAttacks = attacksByCountry["Australia"] || 0;
+
+                        // stacked barchart data
+                        const combinedData = activityData.map(activity => {
+                            const activityTotal = activity.count;
+                            const types = stateData
+                                .filter(d => d.general_activity === activity.general_activity)
+                                .reduce((acc, d) => {
+                                    const type = d.type || 'Unknown';
+                                    acc[type] = (acc[type] || 0) + 1;
+                                    return acc;
+                                }, {});
+
+                            return {
+                                activity: activity.general_activity,
+                                totalPercentage: (activityTotal / TotalAttacks) * 100,
+                                types: Object.entries(types).map(([type, count]) => ({
+                                    type,
+                                    count,
+                                    percentage: (count / TotalAttacks) * 100 // key change: scale to total, not activity
+                                }))
+                            };
+                        });
+
+                        //line chart year counts per year
+                        const yearCounts = {};
+                        let minYear = Infinity;
+                        let maxYear = -Infinity;
+
+                        stateData.forEach(entry => {
+                            const year = parseInt(entry.year);
+                            if (!isNaN(year)) {
+                                yearCounts[year] = (yearCounts[year] || 0) + 1;
+                                if (year < minYear) minYear = year;
+                                if (year > maxYear) maxYear = year;
+                            }
+                        });
+
+                        // Fill in all years from 1900 to 2024 with 0 if missing
+                        const lineChartData = [];
+                        //change years if dataset is bigger
+                        for (let year = 1900; year <= 2024; year++) {
+                            lineChartData.push({
+                                year,
+                                count: yearCounts[year] || 0
+                            });
+                        }
         
                         // Create bar chart
                         //charts.createTypeBarChart(typeData, "AUSTRALIA");
                         charts.createFatalityBarChart(fatalityData, "AUSTRALIA");
                         //charts.createActivityBarChart(activityData, "AUSTRALIA");
-                        //charts.createStackedBarChart(combinedData, "AUSTRALIA");
-
-                            
-                        const TotalAttacks = attacksByCountry["Australia"] || 0;
+                        charts.createStackedBarChart(combinedData, "AUSTRALIA");
+                        charts.createLineGraph(lineChartData);
 
                         // Update info panel
                         infoDiv.html(`
@@ -870,7 +1061,7 @@ Promise.all([
                                     </p>
                                 </div>
                                 <button id="reset-btn" class="reset-button">
-                                    <i class="fas fa-sync-alt"></i> Reset Map
+                                    <i class="fas fa-sync-alt"></i> Back
                                 </button>
                             </div>
                         `);
@@ -1024,7 +1215,7 @@ Promise.all([
                                 </p>
                             </div>
                             <button id="reset-btn" class="reset-button">
-                                <i class="fas fa-sync-alt"></i> Reset Map
+                                <i class="fas fa-sync-alt"></i> Back
                             </button>
                         </div>
                     `);
