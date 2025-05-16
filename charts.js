@@ -163,8 +163,6 @@ export function createFatalityBarChart(data, countryName) {
         .text("Fatality Rate of Attacks");
 }
 
-
-
 export function createActivityBarChart(data, countryName) {
 
     // Only proceed if we have data
@@ -322,7 +320,6 @@ export function createAreaBarChart(data, countryName) {
         .attr("text-anchor", "middle")
         .text("Specific location of attack");
 }
-
 
 export function createStackedBarChart(data, countryName) {
     if (!data || data.length === 0) {
@@ -500,9 +497,6 @@ export function createStackedBarChart(data, countryName) {
         .text(d => d);
 
 }
-
-
-
 
 export function createLineGraph(data) {
 

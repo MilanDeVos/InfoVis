@@ -72,7 +72,7 @@ Promise.all([
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
           .join(' ');
       };
-      
+
     const attackCountries = sharkData.map(d => formatCountryName(d.country));
 
     const attacksByCountry = {};
@@ -80,6 +80,28 @@ Promise.all([
         if (country) {
             attacksByCountry[country] = (attacksByCountry[country] || 0) + 1;
         }
+    });
+
+    // average attacks in the last 10 years (2014-2023)
+    const sharkDataFiltered = sharkData.filter(d => {
+        const year = +d.year;
+        return year >= 2014 && year <= 2023;
+    });
+
+    // Calculate total and average attacks by country in the last 10 years (2014-2023)
+    const attacksByCountry10Years = {};
+    const avgAttacksByCountry = {};
+    
+    sharkDataFiltered.forEach(d => {
+        const country = formatCountryName(d.country);
+        if (country) {
+            attacksByCountry10Years[country] = (attacksByCountry10Years[country] || 0) + 1;
+        }
+    });
+    
+    // Calculate averages (total attacks / number of years)
+    Object.keys(attacksByCountry10Years).forEach(country => {
+        avgAttacksByCountry[country] = attacksByCountry10Years[country] / 10;
     });
 
     const maxAttacks = d3.max(Object.values(attacksByCountry)) || 1;
@@ -107,13 +129,14 @@ Promise.all([
         .on('mouseover', function(event, d) {
             const countryName = d.properties.name;
             const attackCount = attacksByCountry[countryName] || 0;
+            const avgAttacks = avgAttacksByCountry[countryName] || 0;
             
             svg.append('text')
                 .attr('class', 'country-label')
                 .attr('x', '50%')
                 .attr('text-anchor', 'middle')
                 .attr('y', '70%')
-                .text(`${countryName}: ${attackCount} Attacks`);
+                .text(`${countryName}: ${attackCount} total attacks (${avgAttacks.toFixed(1)} attacks/year 2014-2023)`);
         })
         .on('mouseout', function() {
             d3.selectAll('.country-label').remove();
@@ -155,14 +178,36 @@ Promise.all([
                     const usSharkData = sharkData.filter(d => 
                         formatCountryName(d.country) === 'United States of America'
                     );
-                    
+
                     // Count attacks by state
                     const attacksByState = {};
                     usSharkData.forEach(d => {
-                        const state = d.area; // or whatever field contains state info
+                        const state = d.area;
                         if (state) {
                             attacksByState[state] = (attacksByState[state] || 0) + 1;
                         }
+                    });
+
+                    // average attacks in the last 10 years (2014-2023)
+                    const usSharkDataFiltered = usSharkData.filter(d => {
+                        const year = +d.year;
+                        return year >= 2014 && year <= 2023;
+                    });
+
+                    // Calculate total and average attacks by country in the last 10 years (2014-2023)
+                    const attacksByState10Years = {};
+                    const avgAttacksByState = {};
+                    
+                    usSharkDataFiltered.forEach(d => {
+                        const state = d.area;
+                        if (state) {
+                            attacksByState10Years[state] = (attacksByState10Years[state] || 0) + 1;
+                        }
+                    });
+                    
+                    // Calculate averages (total attacks / number of years)
+                    Object.keys(attacksByState10Years).forEach(state => {
+                        avgAttacksByState[state] = attacksByState10Years[state] / 10;
                     });
 
                     const maxStateAttacks = d3.max(Object.values(attacksByState)) || 1;
@@ -185,13 +230,14 @@ Promise.all([
                         .on('mouseover', function(event, d) {
                             const stateName = d.properties.name;
                             const attackCount = attacksByState[stateName] || 0;
+                            const avgAttacks = avgAttacksByState[stateName] || 0;
                             
                             svg.append('text')
                                 .attr('class', 'state-label')
                                 .attr('x', '50%')
                                 .attr('text-anchor', 'middle')
                                 .attr('y', '55%')
-                                .text(`${stateName}: ${attackCount} Attacks`);
+                                .text(`${stateName}: ${attackCount} total attacks (${avgAttacks} Attacks/year 2014-2023)`);
                         })
                         .on('mouseout', function() {
                             d3.selectAll('.state-label').remove();
@@ -346,6 +392,28 @@ Promise.all([
                         }
                     });
 
+                    // average attacks in the last 10 years (2014-2023)
+                    const ausSharkDataFiltered = ausSharkData.filter(d => {
+                        const year = +d.year;
+                        return year >= 2014 && year <= 2023;
+                    });
+
+                    // Calculate total and average attacks by country in the last 10 years (2014-2023)
+                    const attacksByState10Years = {};
+                    const avgAttacksByState = {};
+                        
+                    ausSharkDataFiltered.forEach(d => {
+                        const state = d.area;
+                        if (state) {
+                            attacksByState10Years[state] = (attacksByState10Years[state] || 0) + 1;
+                        }
+                    });
+                        
+                    // Calculate averages (total attacks / number of years)
+                    Object.keys(attacksByState10Years).forEach(state => {
+                        avgAttacksByState[state] = attacksByState10Years[state] / 10;
+                    });
+
                     const maxStateAttacks = d3.max(Object.values(attacksByState)) || 1;
                     const stateColorScale = d3.scaleLinear()
                         .domain([0, maxStateAttacks])
@@ -366,13 +434,14 @@ Promise.all([
                         .on('mouseover', function(event, d) {
                             const stateName = d.properties.name || d.properties.STATE_NAME;
                             const attackCount = attacksByState[stateName] || 0;
+                            const avgAttacks = avgAttacksByState[stateName] || 0;
                             
                             svg.append('text')
                                 .attr('class', 'state-label')
                                 .attr('x', '50%')
                                 .attr('text-anchor', 'middle')
                                 .attr('y', '55%')
-                                .text(`${stateName}: ${attackCount} Attacks`);
+                                .text(`${stateName}: ${attackCount} total attacks (${avgAttacks} Attacks/year 2014-2023)`);
                         })
                         .on('mouseout', function() {
                             d3.selectAll('.state-label').remove();
@@ -680,13 +749,15 @@ Promise.all([
             .on('mouseover', function(event, d) {
                 const countryName = d.properties.name;
                 const attackCount = attacksByCountry[countryName] || 0;
+                const avgAttacks = avgAttacksByCountry[countryName] || 0;
                 
                 svg.append('text')
                     .attr('class', 'country-label')
                     .attr('x', '50%')
                     .attr('text-anchor', 'middle')
                     .attr('y', '70%')
-                    .text(`${countryName}: ${attackCount} Attacks`);
+                    //.text(`${countryName}: ${attackCount} Attacks`);
+                    .text(`${countryName}: ${attackCount} total attacks (${avgAttacks.toFixed(1)} attacks/year 2014-2023)`);
             })
             .on('mouseout', function() {
                 d3.selectAll('.country-label').remove();
@@ -736,6 +807,28 @@ Promise.all([
                             }
                         });
 
+                        // average attacks in the last 10 years (2014-2023)
+                        const usSharkDataFiltered = usSharkData.filter(d => {
+                            const year = +d.year;
+                            return year >= 2014 && year <= 2023;
+                        });
+
+                        // Calculate total and average attacks by country in the last 10 years (2014-2023)
+                        const attacksByState10Years = {};
+                        const avgAttacksByState = {};
+                        
+                        usSharkDataFiltered.forEach(d => {
+                            const state = d.area;
+                            if (state) {
+                                attacksByState10Years[state] = (attacksByState10Years[state] || 0) + 1;
+                            }
+                        });
+                        
+                        // Calculate averages (total attacks / number of years)
+                        Object.keys(attacksByState10Years).forEach(state => {
+                            avgAttacksByState[state] = attacksByState10Years[state] / 10;
+                        });
+
                         const maxStateAttacks = d3.max(Object.values(attacksByState)) || 1;
                         const stateColorScale = d3.scaleLinear()
                             .domain([0, maxStateAttacks])
@@ -756,13 +849,14 @@ Promise.all([
                             .on('mouseover', function(event, d) {
                                 const stateName = d.properties.name;
                                 const attackCount = attacksByState[stateName] || 0;
-                                
+                                const avgAttacks = avgAttacksByState[stateName] || 0;
+                            
                                 svg.append('text')
                                     .attr('class', 'state-label')
                                     .attr('x', '50%')
                                     .attr('text-anchor', 'middle')
                                     .attr('y', '55%')
-                                    .text(`${stateName}: ${attackCount} Attacks`);
+                                    .text(`${stateName}: ${attackCount} total attacks (${avgAttacks} Attacks/year 2014-2023)`);
                             })
                             .on('mouseout', function() {
                                 d3.selectAll('.state-label').remove();
@@ -914,6 +1008,28 @@ Promise.all([
                             }
                         });
 
+                        // average attacks in the last 10 years (2014-2023)
+                        const ausSharkDataFiltered = ausSharkData.filter(d => {
+                            const year = +d.year;
+                            return year >= 2014 && year <= 2023;
+                        });
+
+                        // Calculate total and average attacks by country in the last 10 years (2014-2023)
+                        const attacksByState10Years = {};
+                        const avgAttacksByState = {};
+                            
+                        ausSharkDataFiltered.forEach(d => {
+                            const state = d.area;
+                            if (state) {
+                                attacksByState10Years[state] = (attacksByState10Years[state] || 0) + 1;
+                            }
+                        });
+                            
+                        // Calculate averages (total attacks / number of years)
+                        Object.keys(attacksByState10Years).forEach(state => {
+                            avgAttacksByState[state] = attacksByState10Years[state] / 10;
+                        });
+
                         const maxStateAttacks = d3.max(Object.values(attacksByState)) || 1;
                         const stateColorScale = d3.scaleLinear()
                             .domain([0, maxStateAttacks])
@@ -934,13 +1050,14 @@ Promise.all([
                             .on('mouseover', function(event, d) {
                                 const stateName = d.properties.name || d.properties.STATE_NAME;
                                 const attackCount = attacksByState[stateName] || 0;
-                                
+                                const avgAttacks = avgAttacksByState[stateName] || 0;
+                            
                                 svg.append('text')
                                     .attr('class', 'state-label')
                                     .attr('x', '50%')
                                     .attr('text-anchor', 'middle')
                                     .attr('y', '55%')
-                                    .text(`${stateName}: ${attackCount} Attacks`);
+                                    .text(`${stateName}: ${attackCount} total attacks (${avgAttacks} Attacks/year 2014-2023)`);
                             })
                             .on('mouseout', function() {
                                 d3.selectAll('.state-label').remove();
