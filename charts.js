@@ -536,7 +536,7 @@ export function createLineGraph(data) {
     });
 
     //scale: fixed from 1900 to 2024
-    const xDomain = d3.range(1900, 2025);
+    const xDomain = d3.range(1900, 2024);
     const x = d3.scalePoint()
         .domain(xDomain)
         .range([0, width])
