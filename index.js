@@ -105,9 +105,10 @@ Promise.all([
     });
 
     const maxAttacks = d3.max(Object.values(attacksByCountry)) || 1;
-    const colorScale = d3.scaleLinear()
-    .domain([0, maxAttacks])
-    .range(["#ffcccc", "#cc0000"]); // licht naar donkerrood
+    const colorScale = d3.scaleLog()
+        .domain([1, maxAttacks])
+        //.range(["#ffcccc", "#cc0000"]); // licht naar donkerrood
+        .range(["#ffe6e6", "#cc0000"]); // licht naar donkerrood
 
     const countries = topojson.feature(mapData, mapData.objects.countries);
     
@@ -124,7 +125,8 @@ Promise.all([
         .attr('fill', d => {
             const countryName = d.properties.name;
             const attackCount = attacksByCountry[countryName] || 0;
-            return attackCount > 0 ? colorScale(attackCount) : '#ccc';
+            if (attackCount <= 0) return '#ccc';
+            return colorScale(attackCount);
         })
         .on('mouseover', function(event, d) {
             const countryName = d.properties.name;
@@ -211,9 +213,10 @@ Promise.all([
                     });
 
                     const maxStateAttacks = d3.max(Object.values(attacksByState)) || 1;
-                        const stateColorScale = d3.scaleLinear()
-                            .domain([0, maxStateAttacks])
-                            .range(["#ffcccc", "#cc0000"]);
+                    const stateColorScale = d3.scaleLog()
+                        .domain([1, maxStateAttacks])
+                        .range(["#ffcccc", "#cc0000"]);
+                        //.range(["#ffe6e6", "#cc0000"]);
                     
                     // Draw US states
                     g.selectAll('.state')
@@ -225,7 +228,8 @@ Promise.all([
                         .attr('fill', d => {
                             const stateName = d.properties.name;
                             const attackCount = attacksByState[stateName] || 0;
-                            return attackCount > 0 ? stateColorScale(attackCount) : '#ccc';
+                            if (attackCount <= 0) return '#ccc';
+                            return stateColorScale(attackCount);
                         })
                         .on('mouseover', function(event, d) {
                             const stateName = d.properties.name;
@@ -429,7 +433,8 @@ Promise.all([
                         .attr('fill', d => {
                             const stateName = d.properties.STATE_NAME;
                             const attackCount = attacksByState[stateName] || 0;
-                            return attackCount > 0 ? stateColorScale(attackCount) : '#ccc';
+                            if (attackCount <= 0) return '#ccc';
+                            return stateColorScale(attackCount);
                         })
                         .on('mouseover', function(event, d) {
                             const stateName = d.properties.name || d.properties.STATE_NAME;
@@ -830,9 +835,10 @@ Promise.all([
                         });
 
                         const maxStateAttacks = d3.max(Object.values(attacksByState)) || 1;
-                        const stateColorScale = d3.scaleLinear()
-                            .domain([0, maxStateAttacks])
+                        const stateColorScale = d3.scaleLog()
+                            .domain([1, maxStateAttacks])
                             .range(["#ffcccc", "#cc0000"]);
+                            //.range(["#ffe6e6", "#cc0000"]);
                         
                         // Draw US states
                         g.selectAll('.state')
@@ -844,7 +850,8 @@ Promise.all([
                             .attr('fill', d => {
                                 const stateName = d.properties.name;
                                 const attackCount = attacksByState[stateName] || 0;
-                                return attackCount > 0 ? stateColorScale(attackCount) : '#ccc';
+                                if (attackCount <= 0) return '#ccc';
+                                return stateColorScale(attackCount);
                             })
                             .on('mouseover', function(event, d) {
                                 const stateName = d.properties.name;
