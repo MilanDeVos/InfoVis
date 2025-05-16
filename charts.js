@@ -158,7 +158,7 @@ export function createFatalityBarChart(data, countryName) {
 
     svg.append("text")
         .attr("x", width / 2)
-        .attr("y", -10)
+        .attr("y", -20)
         .attr("text-anchor", "middle")
         .text("Fatality Rate of Attacks");
 }
@@ -331,7 +331,7 @@ export function createStackedBarChart(data, countryName) {
 
     const margin = { top: 40, right: 160, bottom: 70, left: 100 };
     const width = window.innerWidth * 0.45 - margin.left - margin.right;
-    const height = window.innerHeight * 0.5 - margin.top - margin.bottom;
+    const height = window.innerHeight * 0.35 - margin.top - margin.bottom;
 
     const svg = d3.select('#barchart-container-stacked')
         .append("svg")
@@ -509,7 +509,7 @@ export function createLineGraph(data) {
 
     const margin = { top: 40, right: 30, bottom: 50, left: 60 };
     const width = window.innerWidth * 0.45 - margin.left - margin.right;
-    const height = window.innerHeight * 0.5 - margin.top - margin.bottom;
+    const height = window.innerHeight * 0.35 - margin.top - margin.bottom;
 
     const svg = d3.select('#linechart-container')
         .append("svg")

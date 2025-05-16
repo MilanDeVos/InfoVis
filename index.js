@@ -3,7 +3,7 @@ import * as charts from './charts.js';
 const width = window.innerWidth * 0.8; 
 const height = width * 0.6 ; 
 
-const svg = d3.select('body').append('svg').attr('width', width).attr('height', height);
+const svg = d3.select('body').append('svg').attr('width', width).attr('height', height*0.8);
 
 const projection = d3.geoMercator().scale(width/12).translate([width/2, height/2.5]);
 const path = d3.geoPath(projection);
@@ -137,7 +137,7 @@ Promise.all([
                 .attr('class', 'country-label')
                 .attr('x', '50%')
                 .attr('text-anchor', 'middle')
-                .attr('y', '70%')
+                .attr('y', '85%')
                 .text(`${countryName}: ${attackCount} total attacks (${avgAttacks.toFixed(1)} attacks/year 2014-2023)`);
         })
         .on('mouseout', function() {
@@ -240,7 +240,7 @@ Promise.all([
                                 .attr('class', 'state-label')
                                 .attr('x', '50%')
                                 .attr('text-anchor', 'middle')
-                                .attr('y', '55%')
+                                .attr('y', '65%')
                                 .text(`${stateName}: ${attackCount} total attacks (${avgAttacks} Attacks/year 2014-2023)`);
                         })
                         .on('mouseout', function() {
@@ -450,7 +450,7 @@ Promise.all([
                                 .attr('class', 'state-label')
                                 .attr('x', '50%')
                                 .attr('text-anchor', 'middle')
-                                .attr('y', '55%')
+                                .attr('y', '65%')
                                 .text(`${stateName}: ${attackCount} total attacks (${avgAttacks} Attacks/year 2014-2023)`);
                         })
                         .on('mouseout', function() {
@@ -779,7 +779,7 @@ Promise.all([
                     .attr('class', 'country-label')
                     .attr('x', '50%')
                     .attr('text-anchor', 'middle')
-                    .attr('y', '70%')
+                    .attr('y', '85%')
                     //.text(`${countryName}: ${attackCount} Attacks`);
                     .text(`${countryName}: ${attackCount} total attacks (${avgAttacks.toFixed(1)} attacks/year 2014-2023)`);
             })
@@ -881,7 +881,7 @@ Promise.all([
                                     .attr('class', 'state-label')
                                     .attr('x', '50%')
                                     .attr('text-anchor', 'middle')
-                                    .attr('y', '55%')
+                                    .attr('y', '65%')
                                     .text(`${stateName}: ${attackCount} total attacks (${avgAttacks} Attacks/year 2014-2023)`);
                             })
                             .on('mouseout', function() {
@@ -1089,7 +1089,7 @@ Promise.all([
                                     .attr('class', 'state-label')
                                     .attr('x', '50%')
                                     .attr('text-anchor', 'middle')
-                                    .attr('y', '55%')
+                                    .attr('y', '65%')
                                     .text(`${stateName}: ${attackCount} total attacks (${avgAttacks} Attacks/year 2014-2023)`);
                             })
                             .on('mouseout', function() {
