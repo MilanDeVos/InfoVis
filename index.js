@@ -331,7 +331,7 @@ Promise.all([
                     // Fill in all years from 1900 to 2024 with 0 if missing
                     const lineChartData = [];
                     //change years if dataset is bigger
-                    for (let year = 1900; year <= 2024; year++) {
+                    for (let year = 1900; year <= 2023; year++) {
                         lineChartData.push({
                             year,
                             count: yearCounts[year] || 0
@@ -541,7 +541,7 @@ Promise.all([
                     // Fill in all years from 1900 to 2024 with 0 if missing
                     const lineChartData = [];
                     //change years if dataset is bigger
-                    for (let year = 1900; year <= 2024; year++) {
+                    for (let year = 1900; year <= 2023; year++) {
                         lineChartData.push({
                             year,
                             count: yearCounts[year] || 0
@@ -693,7 +693,7 @@ Promise.all([
                 // Fill in all years from 1900 to 2024 with 0 if missing
                 const lineChartData = [];
                 //change years if dataset is bigger
-                for (let year = 1900; year <= 2024; year++) {
+                for (let year = 1900; year <= 2023; year++) {
                     lineChartData.push({
                         year,
                         count: yearCounts[year] || 0
@@ -953,7 +953,7 @@ Promise.all([
                         // Fill in all years from 1900 to 2024 with 0 if missing
                         const lineChartData = [];
                         //change years if dataset is bigger
-                        for (let year = 1900; year <= 2024; year++) {
+                        for (let year = 1900; year <= 2023; year++) {
                             lineChartData.push({
                                 year,
                                 count: yearCounts[year] || 0
@@ -1159,7 +1159,7 @@ Promise.all([
                         // Fill in all years from 1900 to 2024 with 0 if missing
                         const lineChartData = [];
                         //change years if dataset is bigger
-                        for (let year = 1900; year <= 2024; year++) {
+                        for (let year = 1900; year <= 2023; year++) {
                             lineChartData.push({
                                 year,
                                 count: yearCounts[year] || 0
@@ -1312,7 +1312,7 @@ Promise.all([
                     // Fill in all years from 1900 to 2024 with 0 if missing
                     const lineChartData = [];
                     //change years if dataset is bigger
-                    for (let year = 1900; year <= 2024; year++) {
+                    for (let year = 1900; year <= 2023; year++) {
                         lineChartData.push({
                             year,
                             count: yearCounts[year] || 0

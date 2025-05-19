@@ -535,7 +535,7 @@ export function createLineGraph(data) {
         d.count = +d.count;
     });
 
-    //scale: fixed from 1900 to 2024
+    //scale: fixed from 1900 to 2023
     const xDomain = d3.range(1900, 2024);
     const x = d3.scalePoint()
         .domain(xDomain)
