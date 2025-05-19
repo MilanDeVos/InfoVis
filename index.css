@@ -29,7 +29,7 @@ h1 {
 }
 #barchart-container-fatal_y_n{
     position: absolute; 
-    top: 45%;
+    top: 40%;
     left: 70%;
     width: 300px;
     height: 300px;
@@ -51,18 +51,18 @@ h1 {
 
 #barchart-container-stacked{
     position: absolute; 
-    top: 70%; 
+    top: 65%; 
     left: 0%;
     width: 300px;
-    height: 300px;
+    height: 200px;
 }
 
 #linechart-container{
     position: absolute;
-    top: 70%;
+    top: 65%;
     left: 43%;
     width: 300px;
-    height: 300px;
+    height: 200px;
 }
     
 #infoDiv {

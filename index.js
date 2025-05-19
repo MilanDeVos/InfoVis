@@ -3,7 +3,7 @@ import * as charts from './charts.js';
 const width = window.innerWidth * 0.8; 
 const height = width * 0.6 ; 
 
-const svg = d3.select('body').append('svg').attr('width', width).attr('height', height);
+const svg = d3.select('body').append('svg').attr('width', width).attr('height', height*0.8);
 
 const projection = d3.geoMercator().scale(width/12).translate([width/2, height/2.5]);
 const path = d3.geoPath(projection);
@@ -137,7 +137,7 @@ Promise.all([
                 .attr('class', 'country-label')
                 .attr('x', '50%')
                 .attr('text-anchor', 'middle')
-                .attr('y', '70%')
+                .attr('y', '85%')
                 .text(`${countryName}: ${attackCount} total attacks (${avgAttacks.toFixed(1)} attacks/year 2014-2023)`);
         })
         .on('mouseout', function() {
@@ -240,7 +240,7 @@ Promise.all([
                                 .attr('class', 'state-label')
                                 .attr('x', '50%')
                                 .attr('text-anchor', 'middle')
-                                .attr('y', '55%')
+                                .attr('y', '65%')
                                 .text(`${stateName}: ${attackCount} total attacks (${avgAttacks} Attacks/year 2014-2023)`);
                         })
                         .on('mouseout', function() {
@@ -345,7 +345,7 @@ Promise.all([
                     charts.createStackedBarChart(combinedData, "UNITED STATES OF AMERICA");
                     charts.createLineGraph(lineChartData);
                         
-                    
+                    const avgAttacks = avgAttacksByCountry["United States of America"] || 0;
 
                     // Update info panel
                     infoDiv.html(`
@@ -356,6 +356,11 @@ Promise.all([
                                     <span class="stat-icon">🦈</span>
                                     <span class="stat-value">${TotalAttacks}</span>
                                     <span class="stat-label">Total shark attacks</span>
+                                </p>
+                                <p class="stat-item">
+                                    <span class="stat-icon">🦈</span>
+                                    <span class="stat-value">${avgAttacks}</span>
+                                    <span class="stat-label">Average shark attacks (2014-2023)</span>
                                 </p>
                             </div>
                             <button id="reset-btn" class="reset-button">
@@ -445,7 +450,7 @@ Promise.all([
                                 .attr('class', 'state-label')
                                 .attr('x', '50%')
                                 .attr('text-anchor', 'middle')
-                                .attr('y', '55%')
+                                .attr('y', '65%')
                                 .text(`${stateName}: ${attackCount} total attacks (${avgAttacks} Attacks/year 2014-2023)`);
                         })
                         .on('mouseout', function() {
@@ -555,6 +560,8 @@ Promise.all([
                     charts.createStackedBarChart(combinedData, "AUSTRALIA");
                     charts.createLineGraph(lineChartData);
 
+                    const avgAttacks = avgAttacksByCountry["Australia"] || 0;
+
                     // Update info panel
                     infoDiv.html(`
                         <div class="country-info">
@@ -564,6 +571,11 @@ Promise.all([
                                     <span class="stat-icon">🦈</span>
                                     <span class="stat-value">${TotalAttacks}</span>
                                     <span class="stat-label">Total shark attacks</span>
+                                </p>
+                                <p class="stat-item">
+                                    <span class="stat-icon">🦈</span>
+                                    <span class="stat-value">${avgAttacks}</span>
+                                    <span class="stat-label">Average shark attacks (2014-2023)</span>
                                 </p>
                             </div>
                             <button id="reset-btn" class="reset-button">
@@ -709,6 +721,8 @@ Promise.all([
                 //console.log(combinedData);
                 //charts.createAreaBarChart(areaData, countryName);
 
+                const avgAttacks = avgAttacksByCountry[countryName] || 0;
+
                 infoDiv.html(`
                     <div class="country-info">
                         <h2 class="country-title">${countryName}</h2>
@@ -717,6 +731,11 @@ Promise.all([
                                 <span class="stat-icon">🦈</span>
                                 <span class="stat-value">${attackCount}</span>
                                 <span class="stat-label">Total shark attacks</span>
+                            </p>
+                            <p class="stat-item">
+                                <span class="stat-icon">🦈</span>
+                                <span class="stat-value">${avgAttacks}</span>
+                                <span class="stat-label">Average shark attacks (2014-2023)</span>
                             </p>
                         </div>
                         <button id="reset-btn" class="reset-button">
@@ -760,7 +779,7 @@ Promise.all([
                     .attr('class', 'country-label')
                     .attr('x', '50%')
                     .attr('text-anchor', 'middle')
-                    .attr('y', '70%')
+                    .attr('y', '85%')
                     //.text(`${countryName}: ${attackCount} Attacks`);
                     .text(`${countryName}: ${attackCount} total attacks (${avgAttacks.toFixed(1)} attacks/year 2014-2023)`);
             })
@@ -862,7 +881,7 @@ Promise.all([
                                     .attr('class', 'state-label')
                                     .attr('x', '50%')
                                     .attr('text-anchor', 'middle')
-                                    .attr('y', '55%')
+                                    .attr('y', '65%')
                                     .text(`${stateName}: ${attackCount} total attacks (${avgAttacks} Attacks/year 2014-2023)`);
                             })
                             .on('mouseout', function() {
@@ -967,6 +986,8 @@ Promise.all([
                         charts.createStackedBarChart(combinedData, "UNITED STATES OF AMERICA");
                         charts.createLineGraph(lineChartData);
 
+                        const avgAttacks = avgAttacksByCountry["United States of America"];
+
                         // Update info panel
                         infoDiv.html(`
                             <div class="country-info">
@@ -976,6 +997,11 @@ Promise.all([
                                         <span class="stat-icon">🦈</span>
                                         <span class="stat-value">${TotalAttacks}</span>
                                         <span class="stat-label">Total shark attacks</span>
+                                    </p>
+                                    <p class="stat-item">
+                                        <span class="stat-icon">🦈</span>
+                                        <span class="stat-value">${avgAttacks}</span>
+                                        <span class="stat-label">Average shark attacks (2014-2023)</span>
                                     </p>
                                 </div>
                                 <button id="reset-btn" class="reset-button">
@@ -1063,7 +1089,7 @@ Promise.all([
                                     .attr('class', 'state-label')
                                     .attr('x', '50%')
                                     .attr('text-anchor', 'middle')
-                                    .attr('y', '55%')
+                                    .attr('y', '65%')
                                     .text(`${stateName}: ${attackCount} total attacks (${avgAttacks} Attacks/year 2014-2023)`);
                             })
                             .on('mouseout', function() {
@@ -1173,6 +1199,8 @@ Promise.all([
                         charts.createStackedBarChart(combinedData, "AUSTRALIA");
                         charts.createLineGraph(lineChartData);
 
+                        const avgAttacks = avgAttacksByCountry["Australia"];
+
                         // Update info panel
                         infoDiv.html(`
                             <div class="country-info">
@@ -1182,6 +1210,11 @@ Promise.all([
                                         <span class="stat-icon">🦈</span>
                                         <span class="stat-value">${TotalAttacks}</span>
                                         <span class="stat-label">Total shark attacks</span>
+                                    </p>
+                                    <p class="stat-item">
+                                        <span class="stat-icon">🦈</span>
+                                        <span class="stat-value">${avgAttacks}</span>
+                                        <span class="stat-label">Average shark attacks (2014-2023)</span>
                                     </p>
                                 </div>
                                 <button id="reset-btn" class="reset-button">
@@ -1327,6 +1360,8 @@ Promise.all([
                     charts.createStackedBarChart(combinedData, countryName);
                     charts.createLineGraph(lineChartData);
                     //charts.createAreaBarChart(areaData, countryName);
+
+                    const avgAttacks = avgAttacksByCountry[countryName];
                         
                     infoDiv.html(`
                         <div class="country-info">
@@ -1336,6 +1371,11 @@ Promise.all([
                                     <span class="stat-icon">🦈</span>
                                     <span class="stat-value">${attackCount}</span>
                                     <span class="stat-label">Total shark attacks</span>
+                                </p>
+                                <p class="stat-item">
+                                    <span class="stat-icon">🦈</span>
+                                    <span class="stat-value">${avgAttacks}</span>
+                                    <span class="stat-label">Average shark attacks (2014-2023)</span>
                                 </p>
                             </div>
                             <button id="reset-btn" class="reset-button">
