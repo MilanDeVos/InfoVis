@@ -101,7 +101,11 @@ Promise.all([
     
     // Calculate averages (total attacks / number of years)
     Object.keys(attacksByCountry10Years).forEach(country => {
-        avgAttacksByCountry[country] = attacksByCountry10Years[country] / 10;
+        if (attacksByCountry10Years[country] === 0) {
+            avgAttacksByCountry[country] = 0;
+        } else {
+            avgAttacksByCountry[country] = attacksByCountry10Years[country] / 10;
+        }
     });
 
     const maxAttacks = d3.max(Object.values(attacksByCountry)) || 1;
@@ -154,7 +158,6 @@ Promise.all([
             d3.select(this).classed('country-selected', true);
 
             const countryName = clickedCountry.properties.name;
-            console.log(countryName);
 
             // on click USA create different map
             if (countryName === 'United States of America') {
@@ -1360,8 +1363,14 @@ Promise.all([
                     charts.createStackedBarChart(combinedData, countryName);
                     charts.createLineGraph(lineChartData);
                     //charts.createAreaBarChart(areaData, countryName);
-
-                    const avgAttacks = avgAttacksByCountry[countryName];
+                    
+                    let avgAttacks;
+                    if (avgAttacksByCountry[countryName]) {
+                        avgAttacks = avgAttacksByCountry[countryName];
+                    } else {
+                        avgAttacks = 0;
+                    }
+                    
                         
                     infoDiv.html(`
                         <div class="country-info">
