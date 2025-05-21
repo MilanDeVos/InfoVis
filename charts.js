@@ -84,7 +84,7 @@ export function createFatalityBarChart(data, countryName) {
     if (!data || data.length === 0) {
         d3.select('#barchart-container-fatal_y_n')
             .append("p")
-            .text("No fatality data available");
+            //.text("No fatality data available");
         return;
     }
 
@@ -325,7 +325,7 @@ export function createStackedBarChart(data, countryName) {
     if (!data || data.length === 0) {
         d3.select('#barchart-container-stacked')
             .append("p")
-            .text("No activity data available");
+            //.text("No activity data available");
         return;
     }
 
