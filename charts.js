@@ -373,7 +373,7 @@ export function createStackedBarChart(data, countryName) {
 
     const color = d3.scaleOrdinal()
         .domain(allTypes)
-        .range(["#1f78b4", "#984ea3", "#ffcc00"]); // Bright Blue, Vivid Purple, Golden Yellow
+        .range(["#0072B2", "#E69F00", "#56B4E9"]);
 
 
 
