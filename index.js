@@ -31,16 +31,25 @@ const infoDiv = d3.select('body').append('div')
 const beginInfo = `
     <div class="country-info">
         <h2>Should we be scared of shark attacks?</h2>
-        <p class="stat-item">
-            Every year, about 100 people are attacked by sharks.
-            These are usually not fatal.
-        </p>
-        <p class="stat-item">
-            Every year, more than 1 million people die in car accidents worldwide.
-        </p>
-        <p class="stat-item">
-            Every year, more than 320.000 people drown worldwide.
-        </p>
+        <ul class="stat-list">
+            <li>Shark attacks are extremely rare and often accidental</li>
+            <li>Sharks usually mistake humans for prey (like seals), especially in murky water</li>
+            <li>Yearly statistics:
+                <ul>
+                    <li>~100 shark attacks worldwide (mostly non-fatal)</li>
+                    <li>>1 million car accident deaths</li>
+                    <li>>320,000 drowning deaths</li>
+                </ul>
+            </li>
+            <li>Movies and TV portrayals of sharks intentionally hunting humans are misleading</li>
+        </ul>
+        <h3>Our Approach:</h3>
+        <ul>
+            <li>We provide data-driven insights on ocean risks</li>
+            <li>Help distinguish real vs. perceived dangers</li>
+            <li>Empower safer, more enjoyable ocean experiences</li>
+            <li>Highlight which activities need caution vs. which are generally safe</li>
+        </ul>
     </div>
     `;
 infoDiv.html(beginInfo)
@@ -142,7 +151,7 @@ Promise.all([
                 .attr('x', '50%')
                 .attr('text-anchor', 'middle')
                 .attr('y', '85%')
-                .text(`${countryName}: ${attackCount} total attacks (${avgAttacks.toFixed(1)} attacks/year 2014-2023)`);
+                .text(`${countryName}: ${attackCount} total attacks since 1900 (${avgAttacks.toFixed(1)} attacks/year 2014-2023)`);
         })
         .on('mouseout', function() {
             d3.selectAll('.country-label').remove();
@@ -244,7 +253,7 @@ Promise.all([
                                 .attr('x', '50%')
                                 .attr('text-anchor', 'middle')
                                 .attr('y', '65%')
-                                .text(`${stateName}: ${attackCount} total attacks (${avgAttacks} Attacks/year 2014-2023)`);
+                                .text(`${stateName}: ${attackCount} total attacks since 1900 (${avgAttacks} Attacks/year 2014-2023)`);
                         })
                         .on('mouseout', function() {
                             d3.selectAll('.state-label').remove();
@@ -358,7 +367,7 @@ Promise.all([
                                 <p class="stat-item">
                                     <span class="stat-icon">🦈</span>
                                     <span class="stat-value">${TotalAttacks}</span>
-                                    <span class="stat-label">Total shark attacks</span>
+                                    <span class="stat-label">Total shark attacks since 1900</span>
                                 </p>
                                 <p class="stat-item">
                                     <span class="stat-icon">🦈</span>
@@ -454,7 +463,7 @@ Promise.all([
                                 .attr('x', '50%')
                                 .attr('text-anchor', 'middle')
                                 .attr('y', '65%')
-                                .text(`${stateName}: ${attackCount} total attacks (${avgAttacks} Attacks/year 2014-2023)`);
+                                .text(`${stateName}: ${attackCount} total attacks since 1900 (${avgAttacks} Attacks/year 2014-2023)`);
                         })
                         .on('mouseout', function() {
                             d3.selectAll('.state-label').remove();
@@ -573,7 +582,7 @@ Promise.all([
                                 <p class="stat-item">
                                     <span class="stat-icon">🦈</span>
                                     <span class="stat-value">${TotalAttacks}</span>
-                                    <span class="stat-label">Total shark attacks</span>
+                                    <span class="stat-label">Total shark attacks since 1900</span>
                                 </p>
                                 <p class="stat-item">
                                     <span class="stat-icon">🦈</span>
@@ -733,7 +742,7 @@ Promise.all([
                             <p class="stat-item">
                                 <span class="stat-icon">🦈</span>
                                 <span class="stat-value">${attackCount}</span>
-                                <span class="stat-label">Total shark attacks</span>
+                                <span class="stat-label">Total shark attacks since 1900</span>
                             </p>
                             <p class="stat-item">
                                 <span class="stat-icon">🦈</span>
@@ -784,7 +793,7 @@ Promise.all([
                     .attr('text-anchor', 'middle')
                     .attr('y', '85%')
                     //.text(`${countryName}: ${attackCount} Attacks`);
-                    .text(`${countryName}: ${attackCount} total attacks (${avgAttacks.toFixed(1)} attacks/year 2014-2023)`);
+                    .text(`${countryName}: ${attackCount} total attacks since 1900 (${avgAttacks.toFixed(1)} attacks/year 2014-2023)`);
             })
             .on('mouseout', function() {
                 d3.selectAll('.country-label').remove();
@@ -885,7 +894,7 @@ Promise.all([
                                     .attr('x', '50%')
                                     .attr('text-anchor', 'middle')
                                     .attr('y', '65%')
-                                    .text(`${stateName}: ${attackCount} total attacks (${avgAttacks} Attacks/year 2014-2023)`);
+                                    .text(`${stateName}: ${attackCount} total attacks since 1900 (${avgAttacks} Attacks/year 2014-2023)`);
                             })
                             .on('mouseout', function() {
                                 d3.selectAll('.state-label').remove();
@@ -999,7 +1008,7 @@ Promise.all([
                                     <p class="stat-item">
                                         <span class="stat-icon">🦈</span>
                                         <span class="stat-value">${TotalAttacks}</span>
-                                        <span class="stat-label">Total shark attacks</span>
+                                        <span class="stat-label">Total shark attacks since 1900</span>
                                     </p>
                                     <p class="stat-item">
                                         <span class="stat-icon">🦈</span>
@@ -1093,7 +1102,7 @@ Promise.all([
                                     .attr('x', '50%')
                                     .attr('text-anchor', 'middle')
                                     .attr('y', '65%')
-                                    .text(`${stateName}: ${attackCount} total attacks (${avgAttacks} Attacks/year 2014-2023)`);
+                                    .text(`${stateName}: ${attackCount} total attacks since 1900 (${avgAttacks} Attacks/year 2014-2023)`);
                             })
                             .on('mouseout', function() {
                                 d3.selectAll('.state-label').remove();
@@ -1212,7 +1221,7 @@ Promise.all([
                                     <p class="stat-item">
                                         <span class="stat-icon">🦈</span>
                                         <span class="stat-value">${TotalAttacks}</span>
-                                        <span class="stat-label">Total shark attacks</span>
+                                        <span class="stat-label">Total shark attacks since 1900</span>
                                     </p>
                                     <p class="stat-item">
                                         <span class="stat-icon">🦈</span>
@@ -1379,7 +1388,7 @@ Promise.all([
                                 <p class="stat-item">
                                     <span class="stat-icon">🦈</span>
                                     <span class="stat-value">${attackCount}</span>
-                                    <span class="stat-label">Total shark attacks</span>
+                                    <span class="stat-label">Total shark attacks since 1900</span>
                                 </p>
                                 <p class="stat-item">
                                     <span class="stat-icon">🦈</span>
