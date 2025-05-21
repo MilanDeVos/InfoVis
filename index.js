@@ -363,7 +363,7 @@ Promise.all([
                                 <p class="stat-item">
                                     <span class="stat-icon">🦈</span>
                                     <span class="stat-value">${avgAttacks}</span>
-                                    <span class="stat-label">Average shark attacks (2014-2023)</span>
+                                    <span class="stat-label">Average shark attacks per year (2014-2023)</span>
                                 </p>
                             </div>
                             <button id="reset-btn" class="reset-button">
@@ -578,7 +578,7 @@ Promise.all([
                                 <p class="stat-item">
                                     <span class="stat-icon">🦈</span>
                                     <span class="stat-value">${avgAttacks}</span>
-                                    <span class="stat-label">Average shark attacks (2014-2023)</span>
+                                    <span class="stat-label">Average shark attacks per year (2014-2023)</span>
                                 </p>
                             </div>
                             <button id="reset-btn" class="reset-button">
@@ -738,7 +738,7 @@ Promise.all([
                             <p class="stat-item">
                                 <span class="stat-icon">🦈</span>
                                 <span class="stat-value">${avgAttacks}</span>
-                                <span class="stat-label">Average shark attacks (2014-2023)</span>
+                                <span class="stat-label">Average shark attacks per year (2014-2023)</span>
                             </p>
                         </div>
                         <button id="reset-btn" class="reset-button">
@@ -1004,7 +1004,7 @@ Promise.all([
                                     <p class="stat-item">
                                         <span class="stat-icon">🦈</span>
                                         <span class="stat-value">${avgAttacks}</span>
-                                        <span class="stat-label">Average shark attacks (2014-2023)</span>
+                                        <span class="stat-label">Average shark attacks per year (2014-2023)</span>
                                     </p>
                                 </div>
                                 <button id="reset-btn" class="reset-button">
@@ -1217,7 +1217,7 @@ Promise.all([
                                     <p class="stat-item">
                                         <span class="stat-icon">🦈</span>
                                         <span class="stat-value">${avgAttacks}</span>
-                                        <span class="stat-label">Average shark attacks (2014-2023)</span>
+                                        <span class="stat-label">Average shark attacks per year (2014-2023)</span>
                                     </p>
                                 </div>
                                 <button id="reset-btn" class="reset-button">
@@ -1384,7 +1384,7 @@ Promise.all([
                                 <p class="stat-item">
                                     <span class="stat-icon">🦈</span>
                                     <span class="stat-value">${avgAttacks}</span>
-                                    <span class="stat-label">Average shark attacks (2014-2023)</span>
+                                    <span class="stat-label">Average shark attacks per year (2014-2023)</span>
                                 </p>
                             </div>
                             <button id="reset-btn" class="reset-button">
